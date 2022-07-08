@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AppConfigService } from './app.config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { Environment } from './app.types';
+import { CommonConfigService } from './common/common.config';
+import { CommonModule } from './common/common.module';
 import { DatabaseConfigService } from './database/database.config';
 import { DatabaseModule } from './database/database.module';
 import { validate } from './env.validation';
@@ -15,10 +16,10 @@ import { validate } from './env.validation';
       validate,
     }),
     TypeOrmModule.forRootAsync({
-      imports: [DatabaseModule, AppModule],
+      imports: [DatabaseModule, CommonModule],
       useFactory: (
         databaseConfigService: DatabaseConfigService,
-        appConfigService: AppConfigService,
+        commonConfigService: CommonConfigService,
       ) => {
         return {
           type: 'postgres',
@@ -28,14 +29,13 @@ import { validate } from './env.validation';
           password: databaseConfigService.password,
           database: databaseConfigService.database,
           entities: [],
-          synchronize: appConfigService.env === Environment.Development,
+          synchronize: commonConfigService.env === Environment.Development,
         };
       },
-      inject: [DatabaseConfigService, AppConfigService],
+      inject: [DatabaseConfigService, CommonConfigService],
     }),
   ],
   controllers: [AppController],
-  providers: [AppService, AppConfigService],
-  exports: [AppConfigService],
+  providers: [AppService],
 })
 export class AppModule {}
