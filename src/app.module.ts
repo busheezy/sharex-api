@@ -28,8 +28,8 @@ import { validate } from './env.validation';
           username: databaseConfigService.username,
           password: databaseConfigService.password,
           database: databaseConfigService.database,
-          entities: [],
           synchronize: commonConfigService.env === Environment.Development,
+          autoLoadEntities: true,
         };
       },
       inject: [DatabaseConfigService, CommonConfigService],
