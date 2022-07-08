@@ -1,8 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AppConfigService } from './app.config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { Environment } from './app.types';
 import { DatabaseConfigService } from './database/database.config';
 import { DatabaseModule } from './database/database.module';
 import { validate } from './env.validation';
@@ -13,8 +15,11 @@ import { validate } from './env.validation';
       validate,
     }),
     TypeOrmModule.forRootAsync({
-      imports: [DatabaseModule],
-      useFactory: (databaseConfigService: DatabaseConfigService) => {
+      imports: [DatabaseModule, AppModule],
+      useFactory: (
+        databaseConfigService: DatabaseConfigService,
+        appConfigService: AppConfigService,
+      ) => {
         return {
           type: 'postgres',
           host: databaseConfigService.host,
@@ -23,13 +28,14 @@ import { validate } from './env.validation';
           password: databaseConfigService.password,
           database: databaseConfigService.database,
           entities: [],
-          synchronize: true,
+          synchronize: appConfigService.env === Environment.Development,
         };
       },
-      inject: [DatabaseConfigService],
+      inject: [DatabaseConfigService, AppConfigService],
     }),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, AppConfigService],
+  exports: [AppConfigService],
 })
 export class AppModule {}
