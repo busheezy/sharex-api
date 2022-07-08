@@ -9,4 +9,8 @@ export class CommonConfigService {
   get env(): Environment {
     return this.configService.get('NODE_ENV');
   }
+
+  get apiKey(): string {
+    return this.configService.get('API_KEY');
+  }
 }

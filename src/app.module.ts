@@ -9,6 +9,11 @@ import { CommonModule } from './common/common.module';
 import { DatabaseConfigService } from './database/database.config';
 import { DatabaseModule } from './database/database.module';
 import { validate } from './env.validation';
+import { SharesModule } from './shares/shares.module';
+import { PastesModule } from './pastes/pastes.module';
+import { ImagesModule } from './images/images.module';
+import { FilesModule } from './files/files.module';
+import { LinksModule } from './links/links.module';
 
 @Module({
   imports: [
@@ -34,6 +39,11 @@ import { validate } from './env.validation';
       },
       inject: [DatabaseConfigService, CommonConfigService],
     }),
+    SharesModule,
+    PastesModule,
+    ImagesModule,
+    FilesModule,
+    LinksModule,
   ],
   controllers: [AppController],
   providers: [AppService],
