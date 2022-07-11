@@ -3,7 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CommonService } from '../common/common.service';
 import { Image } from './entities/image.entity';
-import { Express } from 'express';
+import * as sharp from 'sharp';
+import { join } from 'path';
 
 @Injectable()
 export class ImagesService {
@@ -37,5 +38,16 @@ export class ImagesService {
     await this.imageRepo.insert(image);
 
     return image;
+  }
+
+  async generateThumbnail(file: Express.Multer.File): Promise<void> {
+    const thumbnailPath = join(
+      process.cwd(),
+      'thumbnails',
+      'images',
+      file.filename,
+    );
+
+    await sharp(file.path).resize(128).toFile(thumbnailPath);
   }
 }

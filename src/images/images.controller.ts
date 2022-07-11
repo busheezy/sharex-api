@@ -41,6 +41,21 @@ export class ImagesController {
     file.pipe(res);
   }
 
+  @Get(':id/thumbnail')
+  @ApiOkResponse({
+    description: 'We are returning the image thumbnail.',
+  })
+  @ApiProduces('image/*')
+  async findOneThumbnail(@Param('id') stringId: string, @Res() res: Response) {
+    const image = await this.imagesService.findOne(stringId);
+
+    const file = createReadStream(
+      join(process.cwd(), 'thumbnails', 'images', image.fileName),
+    );
+
+    file.pipe(res);
+  }
+
   @Post()
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -48,7 +63,9 @@ export class ImagesController {
     type: CreateImageDto,
   })
   @UseInterceptors(FileInterceptor('image'))
-  create(@UploadedFile() file: Express.Multer.File) {
-    return this.imagesService.create(file);
+  async create(@UploadedFile() file: Express.Multer.File) {
+    await this.imagesService.generateThumbnail(file);
+    const createdImage = await this.imagesService.create(file);
+    return createdImage;
   }
 }
