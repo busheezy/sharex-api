@@ -3,9 +3,19 @@ import { ImagesService } from './images.service';
 import { ImagesController } from './images.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Image } from './entities/image.entity';
+import { MulterModule } from '@nestjs/platform-express';
+import { CommonModule } from '../common/common.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Image])],
+  imports: [
+    CommonModule,
+    TypeOrmModule.forFeature([Image]),
+    MulterModule.registerAsync({
+      useFactory: () => ({
+        dest: './uploads/images',
+      }),
+    }),
+  ],
   controllers: [ImagesController],
   providers: [ImagesService],
 })

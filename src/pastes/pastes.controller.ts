@@ -12,14 +12,13 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes, ApiProduces, ApiTags } from '@nestjs/swagger';
 import { CreatePasteDto } from './dto/create-paste.dto';
 
-@Controller('pastes')
+@Controller('p')
 @ApiTags('pastes')
 export class PastesController {
   constructor(private readonly pastesService: PastesService) {}
 
   @Get(':id')
   @Header('content-type', 'text/plain')
-  @ApiConsumes('text/plain')
   @ApiProduces('text/plain')
   findOne(@Param('id') stringId: string) {
     return this.pastesService.findOne(stringId);

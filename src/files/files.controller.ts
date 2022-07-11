@@ -1,20 +1,47 @@
-import { Controller, Post, Body, Param, Get } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  UseInterceptors,
+  UploadedFile,
+  Param,
+  Get,
+  Res,
+} from '@nestjs/common';
 import { FilesService } from './files.service';
 import { CreateFileDto } from './dto/create-file.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiConsumes, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { Response } from 'express';
+import { createReadStream } from 'fs';
+import { join } from 'path';
 
-@Controller('files')
+@Controller('f')
 @ApiTags('files')
 export class FilesController {
   constructor(private readonly filesService: FilesService) {}
 
   @Get(':id')
-  findOne(@Param('id') stringId: string) {
-    return this.filesService.findOne(stringId);
+  @ApiOkResponse({
+    description: 'We are returning the file.',
+  })
+  async findOne(@Param('id') stringId: string, @Res() res: Response) {
+    const fileRes = await this.filesService.findOne(stringId);
+
+    const file = createReadStream(
+      join(process.cwd(), 'uploads', 'files', fileRes.fileName),
+    );
+
+    file.pipe(res);
   }
 
   @Post()
-  create(@Body() createFileDto: CreateFileDto) {
-    return this.filesService.create(createFileDto);
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: 'File upload.',
+    type: CreateFileDto,
+  })
+  @UseInterceptors(FileInterceptor('file'))
+  create(@UploadedFile() file: Express.Multer.File) {
+    return this.filesService.create(file);
   }
 }

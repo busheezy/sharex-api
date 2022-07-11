@@ -4,6 +4,6 @@ import { nanoid } from 'nanoid';
 @Injectable()
 export class CommonService {
   randomString() {
-    return nanoid();
+    return nanoid(6);
   }
 }

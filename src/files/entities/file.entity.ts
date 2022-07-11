@@ -1,22 +1,14 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity } from 'typeorm';
+import { BaseShare } from '../../common/entities/share.entity';
 
 @Entity()
-export class File {
-  @PrimaryGeneratedColumn()
-  id: number;
+export class File extends BaseShare {
+  @Column()
+  originalFileName: string;
 
   @Column()
   fileName: string;
 
   @Column()
   fileType: string;
-
-  @Column()
-  stringId: string;
-
-  @Column()
-  deleteUrl: string;
-
-  @Column()
-  deleteKey: string;
 }

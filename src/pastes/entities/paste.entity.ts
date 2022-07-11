@@ -1,10 +1,8 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity } from 'typeorm';
+import { BaseShare } from '../../common/entities/share.entity';
 
 @Entity()
-export class Paste {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export class Paste extends BaseShare {
   @Column()
   fileName: string;
 
@@ -13,13 +11,4 @@ export class Paste {
 
   @Column()
   contentType: string;
-
-  @Column()
-  stringId: string;
-
-  @Column()
-  deleteUrl: string;
-
-  @Column()
-  deleteKey: string;
 }

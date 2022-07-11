@@ -10,7 +10,7 @@ export class LinksService {
     @InjectRepository(Link)
     private linkRepo: Repository<Link>,
 
-    private readonly commongService: CommonService,
+    private readonly commonService: CommonService,
   ) {}
   async findOne(stringId: string): Promise<Link> {
     const link = await this.linkRepo.findOne({
@@ -25,9 +25,9 @@ export class LinksService {
   async create(url: string): Promise<Link> {
     const link = new Link();
 
-    link.deleteUrl = this.commongService.randomString();
-    link.deleteKey = this.commongService.randomString();
-    link.stringId = this.commongService.randomString();
+    link.stringId = this.commonService.randomString();
+    link.deleteKey = this.commonService.randomString();
+    link.deletePass = this.commonService.randomString();
 
     link.url = url;
 

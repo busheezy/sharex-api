@@ -10,7 +10,7 @@ export class PastesService {
     @InjectRepository(Paste)
     private pasteRepo: Repository<Paste>,
 
-    private readonly commongService: CommonService,
+    private readonly commonService: CommonService,
   ) {}
   async findOne(stringId: string): Promise<string> {
     const paste = await this.pasteRepo.findOne({
@@ -29,9 +29,9 @@ export class PastesService {
   ): Promise<Paste> {
     const paste = new Paste();
 
-    paste.deleteUrl = this.commongService.randomString();
-    paste.deleteKey = this.commongService.randomString();
-    paste.stringId = this.commongService.randomString();
+    paste.stringId = this.commonService.randomString();
+    paste.deleteKey = this.commonService.randomString();
+    paste.deletePass = this.commonService.randomString();
 
     paste.fileName = fileName;
     paste.content = content.toString('utf-8');
