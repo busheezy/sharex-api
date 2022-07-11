@@ -10,4 +10,13 @@ export class Image {
 
   @Column()
   fileType: string;
+
+  @Column()
+  stringId: string;
+
+  @Column()
+  deleteUrl: string;
+
+  @Column()
+  deleteKey: string;
 }

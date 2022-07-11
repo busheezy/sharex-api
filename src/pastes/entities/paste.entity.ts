@@ -6,8 +6,20 @@ export class Paste {
   id: number;
 
   @Column()
+  fileName: string;
+
+  @Column()
   content: string;
 
   @Column()
   contentType: string;
+
+  @Column()
+  stringId: string;
+
+  @Column()
+  deleteUrl: string;
+
+  @Column()
+  deleteKey: string;
 }

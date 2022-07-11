@@ -1,26 +1,44 @@
 import { Injectable } from '@nestjs/common';
-import { CreatePasteDto } from './dto/create-paste.dto';
-import { UpdatePasteDto } from './dto/update-paste.dto';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Paste } from './entities/paste.entity';
+import { CommonService } from '../common/common.service';
 
 @Injectable()
 export class PastesService {
-  create(createPasteDto: CreatePasteDto) {
-    return 'This action adds a new paste';
+  constructor(
+    @InjectRepository(Paste)
+    private pasteRepo: Repository<Paste>,
+
+    private readonly commongService: CommonService,
+  ) {}
+  async findOne(stringId: string): Promise<string> {
+    const paste = await this.pasteRepo.findOne({
+      where: {
+        stringId,
+      },
+    });
+
+    return paste.content;
   }
 
-  findAll() {
-    return `This action returns all pastes`;
-  }
+  async create(
+    fileName: string,
+    content: Buffer,
+    fileType: string,
+  ): Promise<Paste> {
+    const paste = new Paste();
 
-  findOne(id: number) {
-    return `This action returns a #${id} paste`;
-  }
+    paste.deleteUrl = this.commongService.randomString();
+    paste.deleteKey = this.commongService.randomString();
+    paste.stringId = this.commongService.randomString();
 
-  update(id: number, updatePasteDto: UpdatePasteDto) {
-    return `This action updates a #${id} paste`;
-  }
+    paste.fileName = fileName;
+    paste.content = content.toString('utf-8');
+    paste.contentType = fileType;
 
-  remove(id: number) {
-    return `This action removes a #${id} paste`;
+    await this.pasteRepo.insert(paste);
+
+    return paste;
   }
 }

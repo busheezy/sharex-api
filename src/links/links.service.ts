@@ -1,26 +1,38 @@
 import { Injectable } from '@nestjs/common';
-import { CreateLinkDto } from './dto/create-link.dto';
-import { UpdateLinkDto } from './dto/update-link.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { CommonService } from '../common/common.service';
+import { Link } from './entities/link.entity';
 
 @Injectable()
 export class LinksService {
-  create(createLinkDto: CreateLinkDto) {
-    return 'This action adds a new link';
+  constructor(
+    @InjectRepository(Link)
+    private linkRepo: Repository<Link>,
+
+    private readonly commongService: CommonService,
+  ) {}
+  async findOne(stringId: string): Promise<Link> {
+    const link = await this.linkRepo.findOne({
+      where: {
+        stringId,
+      },
+    });
+
+    return link;
   }
 
-  findAll() {
-    return `This action returns all links`;
-  }
+  async create(url: string): Promise<Link> {
+    const link = new Link();
 
-  findOne(id: number) {
-    return `This action returns a #${id} link`;
-  }
+    link.deleteUrl = this.commongService.randomString();
+    link.deleteKey = this.commongService.randomString();
+    link.stringId = this.commongService.randomString();
 
-  update(id: number, updateLinkDto: UpdateLinkDto) {
-    return `This action updates a #${id} link`;
-  }
+    link.url = url;
 
-  remove(id: number) {
-    return `This action removes a #${id} link`;
+    await this.linkRepo.insert(link);
+
+    return link;
   }
 }

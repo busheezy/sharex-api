@@ -10,4 +10,13 @@ export class File {
 
   @Column()
   fileType: string;
+
+  @Column()
+  stringId: string;
+
+  @Column()
+  deleteUrl: string;
+
+  @Column()
+  deleteKey: string;
 }

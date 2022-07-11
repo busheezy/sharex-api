@@ -8,6 +8,7 @@ specifiers:
   '@nestjs/mapped-types': '*'
   '@nestjs/platform-express': ^8.0.0
   '@nestjs/schematics': ^8.0.0
+  '@nestjs/swagger': ^6.0.1
   '@nestjs/testing': ^8.0.0
   '@nestjs/typeorm': ^9.0.0
   '@types/express': ^4.17.13
@@ -23,6 +24,7 @@ specifiers:
   eslint-config-prettier: ^8.3.0
   eslint-plugin-prettier: ^4.0.0
   jest: 28.0.3
+  nanoid: ^3.0.0
   pg: ^8.7.3
   prettier: ^2.3.2
   reflect-metadata: ^0.1.13
@@ -44,9 +46,11 @@ dependencies:
   '@nestjs/core': 8.4.7_2aa064eef171d5a7957432d22e4b3f20
   '@nestjs/mapped-types': 1.1.0_fe6df273c9388b4b76b6a58eed062952
   '@nestjs/platform-express': 8.4.7_fce4c3b686c1225eb94686491d30b061
+  '@nestjs/swagger': 6.0.1_499d2dcd4dbc76d7b27bbe84c5a170c4
   '@nestjs/typeorm': 9.0.0_af7b508205450ffe2e07e50a84a54cec
   class-transformer: 0.5.1
   class-validator: 0.13.2
+  nanoid: 3.3.4
   pg: 8.7.3
   reflect-metadata: 0.1.13
   rimraf: 3.0.2
@@ -1011,6 +1015,30 @@ packages:
     transitivePeerDependencies:
       - chokidar
     dev: true
+
+  /@nestjs/swagger/6.0.1_499d2dcd4dbc76d7b27bbe84c5a170c4:
+    resolution: {integrity: sha512-rNpncETn+twpf3OPUtGO0MssEOd0cEqiklj2TZv+kAU9gmIWtC/p7Hf1hWbSp9C/l8vF1TnquK80oOaS2G0bAA==}
+    peerDependencies:
+      '@fastify/static': ^6.0.0
+      '@nestjs/common': ^9.0.0
+      '@nestjs/core': ^9.0.0
+      reflect-metadata: ^0.1.12
+    peerDependenciesMeta:
+      '@fastify/static':
+        optional: true
+    dependencies:
+      '@nestjs/common': 8.4.7_5199533202e21c7185c9d97f881e2827
+      '@nestjs/core': 8.4.7_2aa064eef171d5a7957432d22e4b3f20
+      '@nestjs/mapped-types': 1.1.0_fe6df273c9388b4b76b6a58eed062952
+      js-yaml: 4.1.0
+      lodash: 4.17.21
+      path-to-regexp: 3.2.0
+      reflect-metadata: 0.1.13
+      swagger-ui-dist: 4.12.0
+    transitivePeerDependencies:
+      - class-transformer
+      - class-validator
+    dev: false
 
   /@nestjs/testing/8.4.7_c1bddf0102e0d68dc342d4afcbe21907:
     resolution: {integrity: sha512-aedpeJFicTBeiTCvJWUG45WMMS53f5eu8t2fXsfjsU1t+WdDJqYcZyrlCzA4dL1B7MfbqaTURdvuVVHTmJO8ag==}
@@ -3848,6 +3876,12 @@ packages:
       thenify-all: 1.6.0
     dev: false
 
+  /nanoid/3.3.4:
+    resolution: {integrity: sha512-MqBkQh/OHTS2egovRtLk45wEyNXwF+cokD+1YPf9u5VfJiRdAiRwB2froX5Co9Rh20xs4siNPm8naNotSD6RBw==}
+    engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
+    hasBin: true
+    dev: false
+
   /natural-compare/1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
     dev: true
@@ -4705,6 +4739,10 @@ packages:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
     dev: true
+
+  /swagger-ui-dist/4.12.0:
+    resolution: {integrity: sha512-B0Iy2ueXtbByE6OOyHTi3lFQkpPi/L7kFOKFeKTr44za7dJIELa9kzaca6GkndCgpK1QTjArnoXG+aUy0XQp1w==}
+    dev: false
 
   /symbol-observable/4.0.0:
     resolution: {integrity: sha512-b19dMThMV4HVFynSAM1++gBHAbk2Tc/osgLIBZMKsyqh34jb2e8Os7T6ZW/Bt3pJFdBTd2JwAnAAEQV7rSNvcQ==}

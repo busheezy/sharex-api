@@ -3,9 +3,10 @@ import { LinksService } from './links.service';
 import { LinksController } from './links.controller';
 import { Link } from './entities/link.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { CommonModule } from '../common/common.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Link])],
+  imports: [CommonModule, TypeOrmModule.forFeature([Link])],
   controllers: [LinksController],
   providers: [LinksService],
 })
