@@ -12,14 +12,14 @@ export class PastesService {
 
     private readonly commonService: CommonService,
   ) {}
-  async findOne(stringId: string): Promise<string> {
+  async findOne(stringId: string): Promise<Paste> {
     const paste = await this.pasteRepo.findOne({
       where: {
         stringId,
       },
     });
 
-    return paste.content;
+    return paste;
   }
 
   async create(
@@ -40,5 +40,19 @@ export class PastesService {
     await this.pasteRepo.insert(paste);
 
     return paste;
+  }
+
+  findOneByDeleteKey(deleteKey: string): Promise<Paste> {
+    return this.pasteRepo.findOne({
+      where: {
+        deleteKey,
+      },
+    });
+  }
+
+  delete(deleteKey: string) {
+    return this.pasteRepo.delete({
+      deleteKey,
+    });
   }
 }

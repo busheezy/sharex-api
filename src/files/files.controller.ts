@@ -5,15 +5,18 @@ import {
   UploadedFile,
   Param,
   Get,
-  Res,
+  Response,
+  StreamableFile,
+  NotFoundException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { FilesService } from './files.service';
-import { CreateFileDto } from './dto/create-file.dto';
 import { ApiBody, ApiConsumes, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Response } from 'express';
 import { createReadStream } from 'fs';
 import { join } from 'path';
+import { CreateFileDto } from './dto/create-file.dto';
+import { unlink } from 'fs/promises';
 
 @Controller('f')
 @ApiTags('files')
@@ -22,16 +25,28 @@ export class FilesController {
 
   @Get(':id')
   @ApiOkResponse({
-    description: 'We are returning the file.',
+    description: 'We are returning the image.',
+    schema: {
+      type: 'string',
+      format: 'binary',
+    },
   })
-  async findOne(@Param('id') stringId: string, @Res() res: Response) {
-    const fileRes = await this.filesService.findOne(stringId);
+  async findOne(
+    @Param('id') stringId: string,
+    @Response({ passthrough: true }) res,
+  ): Promise<StreamableFile> {
+    const image = await this.filesService.findOne(stringId);
 
     const file = createReadStream(
-      join(process.cwd(), 'uploads', 'files', fileRes.fileName),
+      join(process.cwd(), 'uploads', 'files', image.fileName),
     );
 
-    file.pipe(res);
+    res.set({
+      'Content-Type': image.fileType,
+      'Content-Disposition': `attachment; filename=${image.originalFileName}`,
+    });
+
+    return new StreamableFile(file);
   }
 
   @Post()
@@ -43,5 +58,40 @@ export class FilesController {
   @UseInterceptors(FileInterceptor('file'))
   create(@UploadedFile() file: Express.Multer.File) {
     return this.filesService.create(file);
+  }
+
+  @Get('delete/:key')
+  async deleteCode(@Param('key') key: string) {
+    const file = await this.filesService.findOneByDeleteKey(key);
+
+    if (!file) {
+      throw new NotFoundException();
+    }
+
+    const { deletePass } = file;
+
+    return deletePass;
+  }
+
+  @Get('delete/:key/:pass')
+  async delete(@Param('key') key: string, @Param('pass') pass: string) {
+    const file = await this.filesService.findOneByDeleteKey(key);
+
+    if (!file) {
+      throw new NotFoundException();
+    }
+
+    const { deletePass } = file;
+
+    if (deletePass !== pass) {
+      throw new ForbiddenException();
+    }
+
+    const path = join(process.cwd(), 'uploads', 'files', file.fileName);
+    await unlink(path);
+
+    await this.filesService.delete(key);
+
+    return 'Deleted';
   }
 }

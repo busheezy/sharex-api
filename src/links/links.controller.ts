@@ -1,9 +1,11 @@
 import {
   Body,
   Controller,
+  ForbiddenException,
   Get,
   HttpCode,
   HttpStatus,
+  NotFoundException,
   Param,
   Post,
   Redirect,
@@ -35,5 +37,37 @@ export class LinksController {
   @Post()
   create(@Body() createLinkDto: CreateLinkDto) {
     return this.linksService.create(createLinkDto.url);
+  }
+
+  @Get('delete/:key')
+  async deleteCode(@Param('key') key: string) {
+    const link = await this.linksService.findOneByDeleteKey(key);
+
+    if (!link) {
+      throw new NotFoundException();
+    }
+
+    const { deletePass } = link;
+
+    return deletePass;
+  }
+
+  @Get('delete/:key/:pass')
+  async delete(@Param('key') key: string, @Param('pass') pass: string) {
+    const link = await this.linksService.findOneByDeleteKey(key);
+
+    if (!link) {
+      throw new NotFoundException();
+    }
+
+    const { deletePass } = link;
+
+    if (deletePass !== pass) {
+      throw new ForbiddenException();
+    }
+
+    await this.linksService.delete(key);
+
+    return 'Deleted';
   }
 }

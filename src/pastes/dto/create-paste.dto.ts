@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Express } from 'express';
 
 export class CreatePasteDto {
   @ApiProperty({ type: 'string', format: 'binary' })
-  paste: Buffer;
+  paste: Express.Multer.File;
 }

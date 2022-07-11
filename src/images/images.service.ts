@@ -50,4 +50,18 @@ export class ImagesService {
 
     await sharp(file.path).resize(128).toFile(thumbnailPath);
   }
+
+  findOneByDeleteKey(deleteKey: string): Promise<Image> {
+    return this.imageRepo.findOne({
+      where: {
+        deleteKey,
+      },
+    });
+  }
+
+  delete(deleteKey: string) {
+    return this.imageRepo.delete({
+      deleteKey,
+    });
+  }
 }

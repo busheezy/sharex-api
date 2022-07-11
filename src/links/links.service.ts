@@ -35,4 +35,18 @@ export class LinksService {
 
     return link;
   }
+
+  findOneByDeleteKey(deleteKey: string): Promise<Link> {
+    return this.linkRepo.findOne({
+      where: {
+        deleteKey,
+      },
+    });
+  }
+
+  delete(deleteKey: string) {
+    return this.linkRepo.delete({
+      deleteKey,
+    });
+  }
 }

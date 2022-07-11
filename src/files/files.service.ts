@@ -37,4 +37,18 @@ export class FilesService {
 
     return fileShare;
   }
+
+  findOneByDeleteKey(deleteKey: string): Promise<File> {
+    return this.fileRepo.findOne({
+      where: {
+        deleteKey,
+      },
+    });
+  }
+
+  delete(deleteKey: string) {
+    return this.fileRepo.delete({
+      deleteKey,
+    });
+  }
 }
