@@ -2,6 +2,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { API_KEY_NAME, API_KEY_TYPE } from './auth/auth.consts';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -20,7 +21,10 @@ async function bootstrap() {
     .setTitle('ShareX API')
     .setDescription('API for personal sharex server.')
     .setVersion('1.0')
-    .addTag('share')
+    .addApiKey(
+      { type: API_KEY_TYPE, name: API_KEY_NAME, in: 'header' },
+      API_KEY_NAME,
+    )
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

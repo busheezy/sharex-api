@@ -6,14 +6,22 @@ import {
   UseInterceptors,
   UploadedFile,
   Header,
-  Response,
   NotFoundException,
   ForbiddenException,
+  UseGuards,
 } from '@nestjs/common';
 import { PastesService } from './pastes.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiBody, ApiConsumes, ApiProduces, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiConsumes,
+  ApiProduces,
+  ApiSecurity,
+  ApiTags,
+} from '@nestjs/swagger';
 import { CreatePasteDto } from './dto/create-paste.dto';
+import { AuthenticatedGuard } from '../auth/auth.guard';
+import { API_KEY_NAME } from '../auth/auth.consts';
 
 @Controller('p')
 @ApiTags('pastes')
@@ -23,8 +31,14 @@ export class PastesController {
   @Get(':id')
   @Header('content-type', 'text/plain')
   @ApiProduces('text/plain')
-  findOne(@Param('id') stringId: string) {
-    return this.pastesService.findOne(stringId);
+  async findOne(@Param('id') stringId: string) {
+    const paste = await this.pastesService.findOne(stringId);
+
+    if (!paste) {
+      throw new NotFoundException();
+    }
+
+    return paste;
   }
 
   @Post()
@@ -34,6 +48,8 @@ export class PastesController {
     type: CreatePasteDto,
   })
   @UseInterceptors(FileInterceptor('paste'))
+  @UseGuards(AuthenticatedGuard)
+  @ApiSecurity(API_KEY_NAME)
   create(@UploadedFile() file: Express.Multer.File) {
     return this.pastesService.create(
       file.originalname,

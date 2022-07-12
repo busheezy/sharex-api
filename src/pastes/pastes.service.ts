@@ -35,7 +35,7 @@ export class PastesService {
 
     paste.fileName = fileName;
     paste.content = content.toString('utf-8');
-    paste.contentType = fileType;
+    paste.fileType = fileType;
 
     await this.pasteRepo.insert(paste);
 

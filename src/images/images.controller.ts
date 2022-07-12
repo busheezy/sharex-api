@@ -9,6 +9,7 @@ import {
   StreamableFile,
   NotFoundException,
   ForbiddenException,
+  UseGuards,
 } from '@nestjs/common';
 import { ImagesService } from './images.service';
 import { CreateImageDto } from './dto/create-image.dto';
@@ -23,6 +24,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { createReadStream } from 'fs';
 import { join } from 'path';
 import { unlink } from 'fs/promises';
+import { AuthenticatedGuard } from '../auth/auth.guard';
 
 @Controller('i')
 @ApiTags('images')
@@ -43,6 +45,10 @@ export class ImagesController {
     @Response({ passthrough: true }) res,
   ): Promise<StreamableFile> {
     const image = await this.imagesService.findOne(stringId);
+
+    if (!image) {
+      throw new NotFoundException();
+    }
 
     const file = createReadStream(
       join(process.cwd(), 'uploads', 'images', image.fileName),
@@ -70,7 +76,11 @@ export class ImagesController {
   ): Promise<StreamableFile> {
     const image = await this.imagesService.findOne(stringId);
 
-    const file = createReadStream(
+    if (!image) {
+      throw new NotFoundException();
+    }
+
+    const imageFile = createReadStream(
       join(process.cwd(), 'thumbnails', 'images', image.fileName),
     );
 
@@ -78,7 +88,7 @@ export class ImagesController {
       'Content-Type': image.fileType,
     });
 
-    return new StreamableFile(file);
+    return new StreamableFile(imageFile);
   }
 
   @Post()
@@ -88,6 +98,7 @@ export class ImagesController {
     type: CreateImageDto,
   })
   @UseInterceptors(FileInterceptor('image'))
+  @UseGuards(AuthenticatedGuard)
   async create(@UploadedFile() file: Express.Multer.File) {
     await this.imagesService.generateThumbnail(file);
     const createdImage = await this.imagesService.create(file);

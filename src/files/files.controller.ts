@@ -9,6 +9,7 @@ import {
   StreamableFile,
   NotFoundException,
   ForbiddenException,
+  UseGuards,
 } from '@nestjs/common';
 import { FilesService } from './files.service';
 import { ApiBody, ApiConsumes, ApiOkResponse, ApiTags } from '@nestjs/swagger';
@@ -17,6 +18,7 @@ import { createReadStream } from 'fs';
 import { join } from 'path';
 import { CreateFileDto } from './dto/create-file.dto';
 import { unlink } from 'fs/promises';
+import { AuthenticatedGuard } from '../auth/auth.guard';
 
 @Controller('f')
 @ApiTags('files')
@@ -35,18 +37,22 @@ export class FilesController {
     @Param('id') stringId: string,
     @Response({ passthrough: true }) res,
   ): Promise<StreamableFile> {
-    const image = await this.filesService.findOne(stringId);
+    const file = await this.filesService.findOne(stringId);
 
-    const file = createReadStream(
-      join(process.cwd(), 'uploads', 'files', image.fileName),
+    if (!file) {
+      throw new NotFoundException();
+    }
+
+    const fileFile = createReadStream(
+      join(process.cwd(), 'uploads', 'files', file.fileName),
     );
 
     res.set({
-      'Content-Type': image.fileType,
-      'Content-Disposition': `attachment; filename=${image.originalFileName}`,
+      'Content-Type': file.fileType,
+      'Content-Disposition': `attachment; filename=${file.originalFileName}`,
     });
 
-    return new StreamableFile(file);
+    return new StreamableFile(fileFile);
   }
 
   @Post()
@@ -56,6 +62,7 @@ export class FilesController {
     type: CreateFileDto,
   })
   @UseInterceptors(FileInterceptor('file'))
+  @UseGuards(AuthenticatedGuard)
   create(@UploadedFile() file: Express.Multer.File) {
     return this.filesService.create(file);
   }

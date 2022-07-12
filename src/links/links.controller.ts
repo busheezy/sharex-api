@@ -9,10 +9,12 @@ import {
   Param,
   Post,
   Redirect,
+  UseGuards,
 } from '@nestjs/common';
 import { LinksService } from './links.service';
 import { CreateLinkDto } from './dto/create-link.dto';
 import { ApiMovedPermanentlyResponse, ApiTags } from '@nestjs/swagger';
+import { AuthenticatedGuard } from '../auth/auth.guard';
 
 @Controller('l')
 @ApiTags('links')
@@ -28,6 +30,10 @@ export class LinksController {
   async findOne(@Param('id') stringId: string) {
     const link = await this.linksService.findOne(stringId);
 
+    if (!link) {
+      throw new NotFoundException();
+    }
+
     return {
       url: link.url,
       statusCode: HttpStatus.MOVED_PERMANENTLY,
@@ -35,8 +41,15 @@ export class LinksController {
   }
 
   @Post()
-  create(@Body() createLinkDto: CreateLinkDto) {
-    return this.linksService.create(createLinkDto.url);
+  @UseGuards(AuthenticatedGuard)
+  async create(@Body() createLinkDto: CreateLinkDto) {
+    const link = await this.linksService.create(createLinkDto.url);
+
+    if (!link) {
+      throw new NotFoundException();
+    }
+
+    return link;
   }
 
   @Get('delete/:key')
