@@ -33,7 +33,7 @@ export class FilesService {
     fileShare.originalFileName = file.originalname;
     fileShare.fileType = file.mimetype;
 
-    await this.fileRepo.insert(fileShare);
+    await this.fileRepo.save(fileShare);
 
     return fileShare;
   }

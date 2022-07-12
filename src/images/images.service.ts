@@ -35,7 +35,7 @@ export class ImagesService {
     image.originalFileName = file.originalname;
     image.fileType = file.mimetype;
 
-    await this.imageRepo.insert(image);
+    await this.imageRepo.save(image);
 
     return image;
   }

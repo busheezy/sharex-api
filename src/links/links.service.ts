@@ -31,7 +31,7 @@ export class LinksService {
 
     link.url = url;
 
-    await this.linkRepo.insert(link);
+    await this.linkRepo.save(link);
 
     return link;
   }

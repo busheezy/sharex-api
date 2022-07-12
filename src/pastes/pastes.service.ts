@@ -3,6 +3,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Paste } from './entities/paste.entity';
 import { CommonService } from '../common/common.service';
+import { GetPasteDto } from './dto/get-paste.dto';
 
 @Injectable()
 export class PastesService {
@@ -26,7 +27,7 @@ export class PastesService {
     fileName: string,
     content: Buffer,
     fileType: string,
-  ): Promise<Paste> {
+  ): Promise<GetPasteDto> {
     const paste = new Paste();
 
     paste.stringId = this.commonService.randomString();
@@ -37,9 +38,11 @@ export class PastesService {
     paste.content = content.toString('utf-8');
     paste.fileType = fileType;
 
-    await this.pasteRepo.insert(paste);
+    await this.pasteRepo.save(paste);
 
-    return paste;
+    delete paste.content;
+
+    return paste as GetPasteDto;
   }
 
   findOneByDeleteKey(deleteKey: string): Promise<Paste> {
