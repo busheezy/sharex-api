@@ -1,8 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException, StreamableFile } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CommonService } from '../common/common.service';
 import { File } from './entities/file.entity';
+import { unlink } from 'node:fs/promises';
+import { join } from 'node:path';
+import { createReadStream } from 'node:fs';
 
 @Injectable()
 export class FilesService {
@@ -18,6 +21,10 @@ export class FilesService {
         stringId,
       },
     });
+
+    if (!file) {
+      throw new NotFoundException();
+    }
 
     return file;
   }
@@ -38,17 +45,38 @@ export class FilesService {
     return fileShare;
   }
 
-  findOneByDeleteKey(deleteKey: string): Promise<File> {
-    return this.fileRepo.findOne({
+  async findOneByDeleteKey(deleteKey: string): Promise<File> {
+    const file = await this.fileRepo.findOne({
       where: {
         deleteKey,
       },
     });
+
+    if (!file) {
+      throw new NotFoundException();
+    }
+
+    return file;
   }
 
-  delete(deleteKey: string) {
-    return this.fileRepo.delete({
+  async delete(deleteKey: string) {
+    const result = await this.fileRepo.delete({
       deleteKey,
     });
+
+    if (result.affected === 0) {
+      throw new NotFoundException();
+    }
+  }
+
+  async deleteFile(file: File) {
+    const path = join(process.cwd(), 'uploads', 'files', file.fileName);
+    await unlink(path);
+  }
+
+  streamFile(file: File): StreamableFile {
+    return new StreamableFile(
+      createReadStream(join(process.cwd(), 'uploads', 'files', file.fileName)),
+    );
   }
 }

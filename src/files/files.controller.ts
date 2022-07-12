@@ -15,9 +15,6 @@ import { ApiBody, ApiConsumes, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateFileDto } from './dto/create-file.dto';
 import { Auth } from '../auth/auth.decorator';
-import { createReadStream } from 'node:fs';
-import { join } from 'node:path';
-import { unlink } from 'node:fs/promises';
 
 @Controller('f')
 @ApiTags('files')
@@ -42,16 +39,12 @@ export class FilesController {
       throw new NotFoundException();
     }
 
-    const fileFile = createReadStream(
-      join(process.cwd(), 'uploads', 'files', file.fileName),
-    );
-
     res.set({
       'Content-Type': file.fileType,
       'Content-Disposition': `attachment; filename=${file.originalFileName}`,
     });
 
-    return new StreamableFile(fileFile);
+    return this.filesService.streamFile(file);
   }
 
   @Post()
@@ -83,19 +76,13 @@ export class FilesController {
   async delete(@Param('key') key: string, @Param('pass') pass: string) {
     const file = await this.filesService.findOneByDeleteKey(key);
 
-    if (!file) {
-      throw new NotFoundException();
-    }
-
     const { deletePass } = file;
 
     if (deletePass !== pass) {
       throw new ForbiddenException();
     }
 
-    const path = join(process.cwd(), 'uploads', 'files', file.fileName);
-    await unlink(path);
-
+    await this.filesService.deleteFile(file);
     await this.filesService.delete(key);
 
     return 'Deleted';

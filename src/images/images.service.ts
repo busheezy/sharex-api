@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException, StreamableFile } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CommonService } from '../common/common.service';
@@ -6,6 +6,7 @@ import { Image } from './entities/image.entity';
 import * as sharp from 'sharp';
 import { join } from 'node:path';
 import { unlink } from 'node:fs/promises';
+import { createReadStream } from 'node:fs';
 
 @Injectable()
 export class ImagesService {
@@ -21,6 +22,10 @@ export class ImagesService {
         stringId,
       },
     });
+
+    if (!image) {
+      throw new NotFoundException();
+    }
 
     return image;
   }
@@ -52,18 +57,28 @@ export class ImagesService {
     await sharp(file.path).resize(128).toFile(thumbnailPath);
   }
 
-  findOneByDeleteKey(deleteKey: string): Promise<Image> {
-    return this.imageRepo.findOne({
+  async findOneByDeleteKey(deleteKey: string): Promise<Image> {
+    const image = await this.imageRepo.findOne({
       where: {
         deleteKey,
       },
     });
+
+    if (!image) {
+      throw new NotFoundException();
+    }
+
+    return image;
   }
 
-  delete(deleteKey: string) {
-    return this.imageRepo.delete({
+  async delete(deleteKey: string) {
+    const result = await this.imageRepo.delete({
       deleteKey,
     });
+
+    if (result.affected === 0) {
+      throw new NotFoundException();
+    }
   }
 
   async deleteImages(image: Image) {
@@ -79,5 +94,21 @@ export class ImagesService {
     );
 
     await unlink(thumbnailPath);
+  }
+
+  streamImage(image: Image): StreamableFile {
+    return new StreamableFile(
+      createReadStream(
+        join(process.cwd(), 'uploads', 'images', image.fileName),
+      ),
+    );
+  }
+
+  streamImageThumbnail(image: Image): StreamableFile {
+    return new StreamableFile(
+      createReadStream(
+        join(process.cwd(), 'thumbnails', 'images', image.fileName),
+      ),
+    );
   }
 }

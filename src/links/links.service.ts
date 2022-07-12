@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CommonService } from '../common/common.service';
@@ -19,6 +19,10 @@ export class LinksService {
       },
     });
 
+    if (!link) {
+      throw new NotFoundException();
+    }
+
     return link;
   }
 
@@ -36,17 +40,27 @@ export class LinksService {
     return link;
   }
 
-  findOneByDeleteKey(deleteKey: string): Promise<Link> {
-    return this.linkRepo.findOne({
+  async findOneByDeleteKey(deleteKey: string): Promise<Link> {
+    const link = await this.linkRepo.findOne({
       where: {
         deleteKey,
       },
     });
+
+    if (!link) {
+      throw new NotFoundException();
+    }
+
+    return link;
   }
 
-  delete(deleteKey: string) {
-    return this.linkRepo.delete({
+  async delete(deleteKey: string) {
+    const result = await this.linkRepo.delete({
       deleteKey,
     });
+
+    if (result.affected === 0) {
+      throw new NotFoundException();
+    }
   }
 }

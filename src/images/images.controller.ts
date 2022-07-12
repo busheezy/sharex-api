@@ -21,8 +21,6 @@ import {
 } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Auth } from '../auth/auth.decorator';
-import { createReadStream } from 'node:fs';
-import { join } from 'node:path';
 
 @Controller('i')
 @ApiTags('images')
@@ -48,15 +46,11 @@ export class ImagesController {
       throw new NotFoundException();
     }
 
-    const file = createReadStream(
-      join(process.cwd(), 'uploads', 'images', image.fileName),
-    );
-
     res.set({
       'Content-Type': image.fileType,
     });
 
-    return new StreamableFile(file);
+    return this.imagesService.streamImage(image);
   }
 
   @Get(':id/thumbnail')
@@ -78,15 +72,11 @@ export class ImagesController {
       throw new NotFoundException();
     }
 
-    const imageFile = createReadStream(
-      join(process.cwd(), 'thumbnails', 'images', image.fileName),
-    );
-
     res.set({
       'Content-Type': image.fileType,
     });
 
-    return new StreamableFile(imageFile);
+    return this.imagesService.streamImageThumbnail(image);
   }
 
   @Post()

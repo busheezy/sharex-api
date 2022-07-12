@@ -6,7 +6,6 @@ import {
   UseInterceptors,
   UploadedFile,
   Header,
-  NotFoundException,
   ForbiddenException,
 } from '@nestjs/common';
 import { PastesService } from './pastes.service';
@@ -25,12 +24,7 @@ export class PastesController {
   @ApiProduces('text/plain')
   async findOne(@Param('id') stringId: string) {
     const paste = await this.pastesService.findOne(stringId);
-
-    if (!paste) {
-      throw new NotFoundException();
-    }
-
-    return paste;
+    return paste.content;
   }
 
   @Post()
@@ -42,20 +36,12 @@ export class PastesController {
   @UseInterceptors(FileInterceptor('paste'))
   @Auth()
   create(@UploadedFile() file: Express.Multer.File) {
-    return this.pastesService.create(
-      file.originalname,
-      file.buffer,
-      file.mimetype,
-    );
+    return this.pastesService.create(file);
   }
 
   @Get('delete/:key')
   async deleteCode(@Param('key') key: string) {
     const paste = await this.pastesService.findOneByDeleteKey(key);
-
-    if (!paste) {
-      throw new NotFoundException();
-    }
 
     const { deletePass } = paste;
 
@@ -65,10 +51,6 @@ export class PastesController {
   @Get('delete/:key/:pass')
   async delete(@Param('key') key: string, @Param('pass') pass: string) {
     const paste = await this.pastesService.findOneByDeleteKey(key);
-
-    if (!paste) {
-      throw new NotFoundException();
-    }
 
     const { deletePass } = paste;
 

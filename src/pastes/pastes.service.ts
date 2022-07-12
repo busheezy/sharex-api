@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Paste } from './entities/paste.entity';
@@ -20,23 +20,23 @@ export class PastesService {
       },
     });
 
+    if (!paste) {
+      throw new NotFoundException();
+    }
+
     return paste;
   }
 
-  async create(
-    fileName: string,
-    content: Buffer,
-    fileType: string,
-  ): Promise<GetPasteDto> {
+  async create(file: Express.Multer.File): Promise<GetPasteDto> {
     const paste = new Paste();
 
     paste.stringId = this.commonService.randomString();
     paste.deleteKey = this.commonService.randomString();
     paste.deletePass = this.commonService.randomString();
 
-    paste.fileName = fileName;
-    paste.content = content.toString('utf-8');
-    paste.fileType = fileType;
+    paste.fileName = file.originalname;
+    paste.content = file.buffer.toString('utf-8');
+    paste.fileType = file.mimetype;
 
     await this.pasteRepo.save(paste);
 
@@ -45,17 +45,27 @@ export class PastesService {
     return paste as GetPasteDto;
   }
 
-  findOneByDeleteKey(deleteKey: string): Promise<Paste> {
-    return this.pasteRepo.findOne({
+  async findOneByDeleteKey(deleteKey: string): Promise<Paste> {
+    const paste = await this.pasteRepo.findOne({
       where: {
         deleteKey,
       },
     });
+
+    if (!paste) {
+      throw new NotFoundException();
+    }
+
+    return paste;
   }
 
-  delete(deleteKey: string) {
-    return this.pasteRepo.delete({
+  async delete(deleteKey: string) {
+    const result = await this.pasteRepo.delete({
       deleteKey,
     });
+
+    if (result.affected === 0) {
+      throw new NotFoundException();
+    }
   }
 }
