@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { CommonService } from '../common/common.service';
 import { Image } from './entities/image.entity';
 import * as sharp from 'sharp';
-import { join } from 'path';
+import { join } from 'node:path';
 
 @Injectable()
 export class ImagesService {

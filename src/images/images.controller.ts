@@ -9,7 +9,6 @@ import {
   StreamableFile,
   NotFoundException,
   ForbiddenException,
-  UseGuards,
 } from '@nestjs/common';
 import { ImagesService } from './images.service';
 import { CreateImageDto } from './dto/create-image.dto';
@@ -21,10 +20,10 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { createReadStream } from 'fs';
-import { join } from 'path';
-import { unlink } from 'fs/promises';
-import { AuthenticatedGuard } from '../auth/auth.guard';
+import { Auth } from '../auth/auth.decorator';
+import { createReadStream } from 'node:fs';
+import { join } from 'node:path';
+import { unlink } from 'node:fs/promises';
 
 @Controller('i')
 @ApiTags('images')
@@ -98,7 +97,7 @@ export class ImagesController {
     type: CreateImageDto,
   })
   @UseInterceptors(FileInterceptor('image'))
-  @UseGuards(AuthenticatedGuard)
+  @Auth()
   async create(@UploadedFile() file: Express.Multer.File) {
     await this.imagesService.generateThumbnail(file);
     const createdImage = await this.imagesService.create(file);

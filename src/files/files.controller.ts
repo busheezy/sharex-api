@@ -9,16 +9,15 @@ import {
   StreamableFile,
   NotFoundException,
   ForbiddenException,
-  UseGuards,
 } from '@nestjs/common';
 import { FilesService } from './files.service';
 import { ApiBody, ApiConsumes, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { createReadStream } from 'fs';
-import { join } from 'path';
 import { CreateFileDto } from './dto/create-file.dto';
-import { unlink } from 'fs/promises';
-import { AuthenticatedGuard } from '../auth/auth.guard';
+import { Auth } from '../auth/auth.decorator';
+import { createReadStream } from 'node:fs';
+import { join } from 'node:path';
+import { unlink } from 'node:fs/promises';
 
 @Controller('f')
 @ApiTags('files')
@@ -62,7 +61,7 @@ export class FilesController {
     type: CreateFileDto,
   })
   @UseInterceptors(FileInterceptor('file'))
-  @UseGuards(AuthenticatedGuard)
+  @Auth()
   create(@UploadedFile() file: Express.Multer.File) {
     return this.filesService.create(file);
   }

@@ -9,12 +9,11 @@ import {
   Param,
   Post,
   Redirect,
-  UseGuards,
 } from '@nestjs/common';
 import { LinksService } from './links.service';
 import { CreateLinkDto } from './dto/create-link.dto';
 import { ApiMovedPermanentlyResponse, ApiTags } from '@nestjs/swagger';
-import { AuthenticatedGuard } from '../auth/auth.guard';
+import { Auth } from '../auth/auth.decorator';
 
 @Controller('l')
 @ApiTags('links')
@@ -41,7 +40,7 @@ export class LinksController {
   }
 
   @Post()
-  @UseGuards(AuthenticatedGuard)
+  @Auth()
   async create(@Body() createLinkDto: CreateLinkDto) {
     const link = await this.linksService.create(createLinkDto.url);
 

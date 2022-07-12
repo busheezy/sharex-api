@@ -8,20 +8,12 @@ import {
   Header,
   NotFoundException,
   ForbiddenException,
-  UseGuards,
 } from '@nestjs/common';
 import { PastesService } from './pastes.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import {
-  ApiBody,
-  ApiConsumes,
-  ApiProduces,
-  ApiSecurity,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBody, ApiConsumes, ApiProduces, ApiTags } from '@nestjs/swagger';
 import { CreatePasteDto } from './dto/create-paste.dto';
-import { AuthenticatedGuard } from '../auth/auth.guard';
-import { API_KEY_NAME } from '../auth/auth.consts';
+import { Auth } from '../auth/auth.decorator';
 
 @Controller('p')
 @ApiTags('pastes')
@@ -48,8 +40,7 @@ export class PastesController {
     type: CreatePasteDto,
   })
   @UseInterceptors(FileInterceptor('paste'))
-  @UseGuards(AuthenticatedGuard)
-  @ApiSecurity(API_KEY_NAME)
+  @Auth()
   create(@UploadedFile() file: Express.Multer.File) {
     return this.pastesService.create(
       file.originalname,
