@@ -5,6 +5,7 @@ import { CommonService } from '../common/common.service';
 import { Image } from './entities/image.entity';
 import * as sharp from 'sharp';
 import { join } from 'node:path';
+import { unlink } from 'node:fs/promises';
 
 @Injectable()
 export class ImagesService {
@@ -63,5 +64,20 @@ export class ImagesService {
     return this.imageRepo.delete({
       deleteKey,
     });
+  }
+
+  async deleteImages(image: Image) {
+    const imagePath = join(process.cwd(), 'uploads', 'images', image.fileName);
+
+    await unlink(imagePath);
+
+    const thumbnailPath = join(
+      process.cwd(),
+      'thumbnails',
+      'images',
+      image.fileName,
+    );
+
+    await unlink(thumbnailPath);
   }
 }

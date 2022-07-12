@@ -23,7 +23,6 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { Auth } from '../auth/auth.decorator';
 import { createReadStream } from 'node:fs';
 import { join } from 'node:path';
-import { unlink } from 'node:fs/promises';
 
 @Controller('i')
 @ApiTags('images')
@@ -100,8 +99,7 @@ export class ImagesController {
   @Auth()
   async create(@UploadedFile() file: Express.Multer.File) {
     await this.imagesService.generateThumbnail(file);
-    const createdImage = await this.imagesService.create(file);
-    return createdImage;
+    return this.imagesService.create(file);
   }
 
   @Get('delete/:key')
@@ -131,17 +129,7 @@ export class ImagesController {
       throw new ForbiddenException();
     }
 
-    const imagePath = join(process.cwd(), 'uploads', 'images', image.fileName);
-    await unlink(imagePath);
-
-    const thumbnailPath = join(
-      process.cwd(),
-      'thumbnails',
-      'images',
-      image.fileName,
-    );
-    await unlink(thumbnailPath);
-
+    await this.imagesService.deleteImages(image);
     await this.imagesService.delete(key);
 
     return 'Deleted';
