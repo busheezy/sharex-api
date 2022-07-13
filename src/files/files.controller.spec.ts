@@ -47,15 +47,15 @@ describe('FilesController', () => {
 
   describe('findOne', () => {
     it('should return a file', async () => {
-      const fileSample = new File();
-      fileSample.deleteKey = 'a';
-      fileSample.deletePass = 'b';
-      fileSample.fileName = 'c.txt';
-      fileSample.fileType = 'text/plain';
-      fileSample.id = 0;
-      fileSample.stringId = 'abcdefg';
+      const mockFile = new File();
+      mockFile.deleteKey = 'a';
+      mockFile.deletePass = 'b';
+      mockFile.fileName = 'c.txt';
+      mockFile.fileType = 'text/plain';
+      mockFile.id = 0;
+      mockFile.stringId = 'abcdefg';
 
-      jest.spyOn(service, 'findOne').mockResolvedValue(fileSample);
+      jest.spyOn(service, 'findOne').mockResolvedValue(mockFile);
 
       jest
         .spyOn(service, 'streamFile')
@@ -110,15 +110,15 @@ describe('FilesController', () => {
 
   describe('deleteCode', () => {
     it('should return a file by delete key', async () => {
-      const fileSample = new File();
-      fileSample.deleteKey = 'a';
-      fileSample.deletePass = 'b';
-      fileSample.fileName = 'c.txt';
-      fileSample.fileType = 'text/plain';
-      fileSample.id = 0;
-      fileSample.stringId = 'abcdefg';
+      const mockFile = new File();
+      mockFile.deleteKey = 'a';
+      mockFile.deletePass = 'b';
+      mockFile.fileName = 'c.txt';
+      mockFile.fileType = 'text/plain';
+      mockFile.id = 0;
+      mockFile.stringId = 'abcdefg';
 
-      jest.spyOn(service, 'findOneByDeleteKey').mockResolvedValue(fileSample);
+      jest.spyOn(service, 'findOneByDeleteKey').mockResolvedValue(mockFile);
       expect(await controller.deleteCode('abcdefg')).toBe('b');
     });
 
@@ -137,31 +137,31 @@ describe('FilesController', () => {
 
   describe('delete', () => {
     it('should return a file by delete key', async () => {
-      const fileSample = new File();
-      fileSample.deleteKey = 'a';
-      fileSample.deletePass = 'b';
-      fileSample.fileName = 'c.txt';
-      fileSample.fileType = 'text/plain';
-      fileSample.id = 0;
-      fileSample.stringId = 'abcdefg';
+      const mockFile = new File();
+      mockFile.deleteKey = 'a';
+      mockFile.deletePass = 'b';
+      mockFile.fileName = 'c.txt';
+      mockFile.fileType = 'text/plain';
+      mockFile.id = 0;
+      mockFile.stringId = 'abcdefg';
 
       jest.spyOn(service, 'delete').mockResolvedValue();
       jest.spyOn(service, 'deleteFile').mockResolvedValue();
-      jest.spyOn(service, 'findOneByDeleteKey').mockResolvedValue(fileSample);
+      jest.spyOn(service, 'findOneByDeleteKey').mockResolvedValue(mockFile);
       await expect(controller.delete('abcdefg', 'b')).resolves.toBe('Deleted');
     });
 
     it('reject if missing password', async () => {
-      const fileSample = new File();
-      fileSample.deleteKey = 'a';
-      fileSample.deletePass = 'b';
-      fileSample.fileName = 'c.txt';
-      fileSample.fileType = 'text/plain';
-      fileSample.id = 0;
-      fileSample.stringId = 'abcdefg';
+      const mockFile = new File();
+      mockFile.deleteKey = 'a';
+      mockFile.deletePass = 'b';
+      mockFile.fileName = 'c.txt';
+      mockFile.fileType = 'text/plain';
+      mockFile.id = 0;
+      mockFile.stringId = 'abcdefg';
 
       jest.spyOn(service, 'delete').mockResolvedValue();
-      jest.spyOn(service, 'findOneByDeleteKey').mockResolvedValue(fileSample);
+      jest.spyOn(service, 'findOneByDeleteKey').mockResolvedValue(mockFile);
       await expect(
         controller.delete('abcdefg', 'asdfas'),
       ).rejects.toBeInstanceOf(ForbiddenException);

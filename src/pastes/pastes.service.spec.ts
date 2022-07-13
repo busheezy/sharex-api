@@ -58,8 +58,8 @@ describe('PastesService', () => {
 
         const paste = await service.create(mockFile);
 
-        expect(paste.fileName).toEqual(expectedPaste.fileName);
-        expect(paste.fileType).toEqual(expectedPaste.fileType);
+        expect(paste.fileName).toBe(expectedPaste.fileName);
+        expect(paste.fileType).toBe(expectedPaste.fileType);
       });
 
       it('content should not be exposed on creation', async () => {
@@ -95,7 +95,7 @@ describe('PastesService', () => {
 
         pasteRepository.findOne.mockReturnValue(expectedPaste);
         const paste = await service.findOne(pasteId);
-        expect(paste).toEqual(expectedPaste);
+        expect(paste).toBe(expectedPaste);
       });
     });
 
@@ -109,7 +109,7 @@ describe('PastesService', () => {
           expect(false).toBeTruthy();
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          expect(err.message).toEqual('Not Found');
+          expect(err.message).toBe('Not Found');
         }
       });
     });
@@ -123,7 +123,7 @@ describe('PastesService', () => {
 
         pasteRepository.findOne.mockReturnValue(expectedPaste);
         const paste = await service.findOneByDeleteKey(deleteKey);
-        expect(paste).toEqual(expectedPaste);
+        expect(paste).toBe(expectedPaste);
       });
     });
 
@@ -137,7 +137,7 @@ describe('PastesService', () => {
           expect(false).toBeTruthy();
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          expect(err.message).toEqual('Not Found');
+          expect(err.message).toBe('Not Found');
         }
       });
     });
@@ -165,7 +165,7 @@ describe('PastesService', () => {
           expect(false).toBeTruthy();
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          expect(err.message).toEqual('Not Found');
+          expect(err.message).toBe('Not Found');
         }
       });
     });

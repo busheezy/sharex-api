@@ -57,8 +57,8 @@ describe('ImagesService', () => {
 
         const image = await service.create(mockImage);
 
-        expect(image.originalFileName).toEqual(expectedImage.fileName);
-        expect(image.fileType).toEqual(expectedImage.fileType);
+        expect(image.originalFileName).toBe(expectedImage.fileName);
+        expect(image.fileType).toBe(expectedImage.fileType);
       });
     });
   });
@@ -71,7 +71,7 @@ describe('ImagesService', () => {
 
         imageRepository.findOne.mockReturnValue(expectedImage);
         const image = await service.findOne(imageId);
-        expect(image).toEqual(expectedImage);
+        expect(image).toBe(expectedImage);
       });
     });
 
@@ -85,7 +85,7 @@ describe('ImagesService', () => {
           expect(false).toBeTruthy();
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          expect(err.message).toEqual('Not Found');
+          expect(err.message).toBe('Not Found');
         }
       });
     });
@@ -99,7 +99,7 @@ describe('ImagesService', () => {
 
         imageRepository.findOne.mockReturnValue(expectedImage);
         const image = await service.findOneByDeleteKey(deleteKey);
-        expect(image).toEqual(expectedImage);
+        expect(image).toBe(expectedImage);
       });
     });
 
@@ -113,7 +113,7 @@ describe('ImagesService', () => {
           expect(false).toBeTruthy();
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          expect(err.message).toEqual('Not Found');
+          expect(err.message).toBe('Not Found');
         }
       });
     });
@@ -141,7 +141,7 @@ describe('ImagesService', () => {
           expect(false).toBeTruthy();
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          expect(err.message).toEqual('Not Found');
+          expect(err.message).toBe('Not Found');
         }
       });
     });

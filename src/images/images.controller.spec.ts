@@ -47,15 +47,15 @@ describe('ImagesController', () => {
 
   describe('findOne', () => {
     it('should return a image', async () => {
-      const imageSample = new Image();
-      imageSample.deleteKey = 'a';
-      imageSample.deletePass = 'b';
-      imageSample.fileName = 'c.txt';
-      imageSample.fileType = 'text/plain';
-      imageSample.id = 0;
-      imageSample.stringId = 'abcdefg';
+      const mockImage = new Image();
+      mockImage.deleteKey = 'a';
+      mockImage.deletePass = 'b';
+      mockImage.fileName = 'c.txt';
+      mockImage.fileType = 'text/plain';
+      mockImage.id = 0;
+      mockImage.stringId = 'abcdefg';
 
-      jest.spyOn(service, 'findOne').mockResolvedValue(imageSample);
+      jest.spyOn(service, 'findOne').mockResolvedValue(mockImage);
 
       jest
         .spyOn(service, 'streamImage')
@@ -81,15 +81,15 @@ describe('ImagesController', () => {
 
   describe('findOneThumbnail', () => {
     it('should return a image', async () => {
-      const imageSample = new Image();
-      imageSample.deleteKey = 'a';
-      imageSample.deletePass = 'b';
-      imageSample.fileName = 'c.txt';
-      imageSample.fileType = 'text/plain';
-      imageSample.id = 0;
-      imageSample.stringId = 'abcdefg';
+      const mockImage = new Image();
+      mockImage.deleteKey = 'a';
+      mockImage.deletePass = 'b';
+      mockImage.fileName = 'c.txt';
+      mockImage.fileType = 'text/plain';
+      mockImage.id = 0;
+      mockImage.stringId = 'abcdefg';
 
-      jest.spyOn(service, 'findOne').mockResolvedValue(imageSample);
+      jest.spyOn(service, 'findOne').mockResolvedValue(mockImage);
 
       jest
         .spyOn(service, 'streamImageThumbnail')
@@ -145,15 +145,15 @@ describe('ImagesController', () => {
 
   describe('deleteCode', () => {
     it('should return a image by delete key', async () => {
-      const imageSample = new Image();
-      imageSample.deleteKey = 'a';
-      imageSample.deletePass = 'b';
-      imageSample.fileName = 'c.txt';
-      imageSample.fileType = 'text/plain';
-      imageSample.id = 0;
-      imageSample.stringId = 'abcdefg';
+      const mockImage = new Image();
+      mockImage.deleteKey = 'a';
+      mockImage.deletePass = 'b';
+      mockImage.fileName = 'c.txt';
+      mockImage.fileType = 'text/plain';
+      mockImage.id = 0;
+      mockImage.stringId = 'abcdefg';
 
-      jest.spyOn(service, 'findOneByDeleteKey').mockResolvedValue(imageSample);
+      jest.spyOn(service, 'findOneByDeleteKey').mockResolvedValue(mockImage);
       expect(await controller.deleteCode('abcdefg')).toBe('b');
     });
 
@@ -172,31 +172,31 @@ describe('ImagesController', () => {
 
   describe('delete', () => {
     it('should return a image by delete key', async () => {
-      const imageSample = new Image();
-      imageSample.deleteKey = 'a';
-      imageSample.deletePass = 'b';
-      imageSample.fileName = 'c.txt';
-      imageSample.fileType = 'text/plain';
-      imageSample.id = 0;
-      imageSample.stringId = 'abcdefg';
+      const mockImage = new Image();
+      mockImage.deleteKey = 'a';
+      mockImage.deletePass = 'b';
+      mockImage.fileName = 'c.txt';
+      mockImage.fileType = 'text/plain';
+      mockImage.id = 0;
+      mockImage.stringId = 'abcdefg';
 
       jest.spyOn(service, 'delete').mockResolvedValue();
       jest.spyOn(service, 'deleteImages').mockResolvedValue();
-      jest.spyOn(service, 'findOneByDeleteKey').mockResolvedValue(imageSample);
+      jest.spyOn(service, 'findOneByDeleteKey').mockResolvedValue(mockImage);
       await expect(controller.delete('abcdefg', 'b')).resolves.toBe('Deleted');
     });
 
     it('reject if missing password', async () => {
-      const imageSample = new Image();
-      imageSample.deleteKey = 'a';
-      imageSample.deletePass = 'b';
-      imageSample.fileName = 'c.txt';
-      imageSample.fileType = 'text/plain';
-      imageSample.id = 0;
-      imageSample.stringId = 'abcdefg';
+      const mockImage = new Image();
+      mockImage.deleteKey = 'a';
+      mockImage.deletePass = 'b';
+      mockImage.fileName = 'c.txt';
+      mockImage.fileType = 'text/plain';
+      mockImage.id = 0;
+      mockImage.stringId = 'abcdefg';
 
       jest.spyOn(service, 'delete').mockResolvedValue();
-      jest.spyOn(service, 'findOneByDeleteKey').mockResolvedValue(imageSample);
+      jest.spyOn(service, 'findOneByDeleteKey').mockResolvedValue(mockImage);
       await expect(
         controller.delete('abcdefg', 'asdfas'),
       ).rejects.toBeInstanceOf(ForbiddenException);

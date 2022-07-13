@@ -57,8 +57,8 @@ describe('FilesService', () => {
 
         const file = await service.create(mockFile);
 
-        expect(file.originalFileName).toEqual(expectedFile.fileName);
-        expect(file.fileType).toEqual(expectedFile.fileType);
+        expect(file.originalFileName).toBe(expectedFile.fileName);
+        expect(file.fileType).toBe(expectedFile.fileType);
       });
     });
   });
@@ -71,7 +71,7 @@ describe('FilesService', () => {
 
         fileRepository.findOne.mockReturnValue(expectedFile);
         const file = await service.findOne(fileId);
-        expect(file).toEqual(expectedFile);
+        expect(file).toBe(expectedFile);
       });
     });
 
@@ -85,7 +85,7 @@ describe('FilesService', () => {
           expect(false).toBeTruthy();
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          expect(err.message).toEqual('Not Found');
+          expect(err.message).toBe('Not Found');
         }
       });
     });
@@ -99,7 +99,7 @@ describe('FilesService', () => {
 
         fileRepository.findOne.mockReturnValue(expectedFile);
         const file = await service.findOneByDeleteKey(deleteKey);
-        expect(file).toEqual(expectedFile);
+        expect(file).toBe(expectedFile);
       });
     });
 
@@ -113,7 +113,7 @@ describe('FilesService', () => {
           expect(false).toBeTruthy();
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          expect(err.message).toEqual('Not Found');
+          expect(err.message).toBe('Not Found');
         }
       });
     });
@@ -141,7 +141,7 @@ describe('FilesService', () => {
           expect(false).toBeTruthy();
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          expect(err.message).toEqual('Not Found');
+          expect(err.message).toBe('Not Found');
         }
       });
     });

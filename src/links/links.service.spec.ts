@@ -45,7 +45,7 @@ describe('LinksService', () => {
 
         const link = await service.create(mockLink.url);
 
-        expect(link.url).toEqual(mockLink.url);
+        expect(link.url).toBe(mockLink.url);
       });
     });
   });
@@ -63,7 +63,7 @@ describe('LinksService', () => {
 
         linkRepository.findOne.mockReturnValue(mockLink);
         const link = await service.findOne(mockLink.stringId);
-        expect(link).toEqual(mockLink);
+        expect(link).toBe(mockLink);
       });
     });
 
@@ -77,7 +77,7 @@ describe('LinksService', () => {
           expect(false).toBeTruthy();
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          expect(err.message).toEqual('Not Found');
+          expect(err.message).toBe('Not Found');
         }
       });
     });
@@ -91,7 +91,7 @@ describe('LinksService', () => {
 
         linkRepository.findOne.mockReturnValue(mockLink);
         const link = await service.findOneByDeleteKey(deleteKey);
-        expect(link).toEqual(mockLink);
+        expect(link).toBe(mockLink);
       });
     });
 
@@ -105,7 +105,7 @@ describe('LinksService', () => {
           expect(false).toBeTruthy();
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          expect(err.message).toEqual('Not Found');
+          expect(err.message).toBe('Not Found');
         }
       });
     });
@@ -133,7 +133,7 @@ describe('LinksService', () => {
           expect(false).toBeTruthy();
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
-          expect(err.message).toEqual('Not Found');
+          expect(err.message).toBe('Not Found');
         }
       });
     });
