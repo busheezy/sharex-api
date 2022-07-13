@@ -69,7 +69,7 @@ describe('LinksService', () => {
 
     describe('otherwise', () => {
       it('should throw the "NotFoundException"', async () => {
-        const linkId = 'abcdefg';
+        const linkId = 'abcdef';
         linkRepository.findOne.mockReturnValue(undefined);
 
         try {
@@ -86,7 +86,7 @@ describe('LinksService', () => {
   describe('findOneByDeleteKey', () => {
     describe('when link with delete key exists', () => {
       it('should return the link object', async () => {
-        const deleteKey = 'abcdefg';
+        const deleteKey = 'abcdef';
         const mockLink = {};
 
         linkRepository.findOne.mockReturnValue(mockLink);
@@ -97,7 +97,7 @@ describe('LinksService', () => {
 
     describe('otherwise', () => {
       it('should throw the "NotFoundException"', async () => {
-        const deleteKey = 'abcdefg';
+        const deleteKey = 'abcdef';
         linkRepository.findOne.mockReturnValue(undefined);
 
         try {
@@ -114,7 +114,7 @@ describe('LinksService', () => {
   describe('delete', () => {
     describe('when deleting', () => {
       it('no errors', async () => {
-        const deleteKey = 'abcdefg';
+        const deleteKey = 'abcdef';
         linkRepository.delete.mockReturnValue({ affected: 1 });
         await service.delete(deleteKey);
         expect(linkRepository.delete).toBeCalled();
@@ -123,7 +123,7 @@ describe('LinksService', () => {
 
     describe('otherwise', () => {
       it('it should explode', async () => {
-        const deleteKey = 'abcdefg';
+        const deleteKey = 'abcdef';
 
         linkRepository.delete.mockRejectedValue(NotFoundException);
         linkRepository.delete.mockReturnValue({ affected: 0 });

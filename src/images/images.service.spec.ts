@@ -66,7 +66,7 @@ describe('ImagesService', () => {
   describe('findOne', () => {
     describe('when image with string ID exists', () => {
       it('should return the image object', async () => {
-        const imageId = 'abcdefg';
+        const imageId = 'abcdef';
         const expectedImage = {};
 
         imageRepository.findOne.mockReturnValue(expectedImage);
@@ -77,7 +77,7 @@ describe('ImagesService', () => {
 
     describe('otherwise', () => {
       it('should throw the "NotFoundException"', async () => {
-        const imageId = 'abcdefg';
+        const imageId = 'abcdef';
         imageRepository.findOne.mockReturnValue(undefined);
 
         try {
@@ -94,7 +94,7 @@ describe('ImagesService', () => {
   describe('findOneByDeleteKey', () => {
     describe('when image with delete key exists', () => {
       it('should return the image object', async () => {
-        const deleteKey = 'abcdefg';
+        const deleteKey = 'abcdef';
         const expectedImage = {};
 
         imageRepository.findOne.mockReturnValue(expectedImage);
@@ -105,7 +105,7 @@ describe('ImagesService', () => {
 
     describe('otherwise', () => {
       it('should throw the "NotFoundException"', async () => {
-        const deleteKey = 'abcdefg';
+        const deleteKey = 'abcdef';
         imageRepository.findOne.mockReturnValue(undefined);
 
         try {
@@ -122,7 +122,7 @@ describe('ImagesService', () => {
   describe('delete', () => {
     describe('when deleting', () => {
       it('no errors', async () => {
-        const deleteKey = 'abcdefg';
+        const deleteKey = 'abcdef';
         imageRepository.delete.mockReturnValue({ affected: 1 });
         await service.delete(deleteKey);
         expect(imageRepository.delete).toBeCalled();
@@ -131,7 +131,7 @@ describe('ImagesService', () => {
 
     describe('otherwise', () => {
       it('it should explode', async () => {
-        const deleteKey = 'abcdefg';
+        const deleteKey = 'abcdef';
 
         imageRepository.delete.mockRejectedValue(NotFoundException);
         imageRepository.delete.mockReturnValue({ affected: 0 });

@@ -40,14 +40,14 @@ describe('LinksController', () => {
   describe('findOne', () => {
     it('should redirect to a url', async () => {
       const mockLink = new Link();
-      mockLink.deleteKey = 'a';
-      mockLink.deletePass = 'b';
+      mockLink.deleteKey = 'abcdef';
+      mockLink.deletePass = 'ghijkl';
       mockLink.id = 0;
-      mockLink.stringId = 'abcdefg';
+      mockLink.stringId = 'abcdef';
       mockLink.url = 'google.com';
 
       jest.spyOn(service, 'findOne').mockResolvedValue(mockLink);
-      await expect(controller.findOne('abcdefg')).resolves.toEqual({
+      await expect(controller.findOne('abcdef')).resolves.toEqual({
         url: mockLink.url,
         statusCode: 301,
       });
@@ -59,7 +59,7 @@ describe('LinksController', () => {
           .spyOn(service, 'findOne')
           .mockRejectedValue(new NotFoundException());
 
-        await expect(controller.findOne('abcdefg')).rejects.toBeInstanceOf(
+        await expect(controller.findOne('abcdef')).rejects.toBeInstanceOf(
           NotFoundException,
         );
       });
@@ -72,10 +72,10 @@ describe('LinksController', () => {
       mockCreateDto.url = 'google.com';
 
       const mockLink = new Link();
-      mockLink.deleteKey = 'a';
-      mockLink.deletePass = 'b';
+      mockLink.deleteKey = 'abcdef';
+      mockLink.deletePass = 'ghijkl';
       mockLink.id = 0;
-      mockLink.stringId = 'abcdefg';
+      mockLink.stringId = 'abcdef';
       mockLink.url = 'google.com';
 
       jest.spyOn(service, 'create').mockResolvedValue(mockLink);
@@ -88,14 +88,14 @@ describe('LinksController', () => {
   describe('deleteCode', () => {
     it('should return a paste by delete key', async () => {
       const mockLink = new Link();
-      mockLink.deleteKey = 'a';
-      mockLink.deletePass = 'b';
+      mockLink.deleteKey = 'abcdef';
+      mockLink.deletePass = 'ghijkl';
       mockLink.id = 0;
-      mockLink.stringId = 'abcdefg';
+      mockLink.stringId = 'abcdef';
       mockLink.url = 'google.com';
 
       jest.spyOn(service, 'findOneByDeleteKey').mockResolvedValue(mockLink);
-      expect(await controller.deleteCode('abcdefg')).toBe('b');
+      expect(await controller.deleteCode('abcdef')).toBe('ghijkl');
     });
 
     describe('otherwise', () => {
@@ -104,7 +104,7 @@ describe('LinksController', () => {
           .spyOn(service, 'findOneByDeleteKey')
           .mockRejectedValue(new NotFoundException());
 
-        await expect(controller.deleteCode('abcdefg')).rejects.toBeInstanceOf(
+        await expect(controller.deleteCode('abcdef')).rejects.toBeInstanceOf(
           NotFoundException,
         );
       });
@@ -112,41 +112,45 @@ describe('LinksController', () => {
   });
 
   describe('delete', () => {
-    it('should return a paste by delete key', async () => {
+    it('should delete a paste by delete key', async () => {
       const mockLink = new Link();
-      mockLink.deleteKey = 'a';
-      mockLink.deletePass = 'b';
+      mockLink.deleteKey = 'abcdef';
+      mockLink.deletePass = 'ghijkl';
       mockLink.id = 0;
-      mockLink.stringId = 'abcdefg';
+      mockLink.stringId = 'abcdef';
       mockLink.url = 'google.com';
 
       jest.spyOn(service, 'delete').mockResolvedValue();
       jest.spyOn(service, 'findOneByDeleteKey').mockResolvedValue(mockLink);
-      await expect(controller.delete('abcdefg', 'b')).resolves.toBe('Deleted');
+
+      await expect(controller.delete('abcdef', 'ghijkl')).resolves.toBe(
+        'Deleted',
+      );
     });
 
     it('reject if missing password', async () => {
       const mockLink = new Link();
-      mockLink.deleteKey = 'a';
-      mockLink.deletePass = 'b';
+      mockLink.deleteKey = 'abcdef';
+      mockLink.deletePass = 'ghijkl';
       mockLink.id = 0;
-      mockLink.stringId = 'abcdefg';
+      mockLink.stringId = 'abcdef';
       mockLink.url = 'google.com';
 
       jest.spyOn(service, 'delete').mockResolvedValue();
       jest.spyOn(service, 'findOneByDeleteKey').mockResolvedValue(mockLink);
-      await expect(
-        controller.delete('abcdefg', 'asdfas'),
-      ).rejects.toBeInstanceOf(ForbiddenException);
+
+      await expect(controller.delete('abcdef', '')).rejects.toBeInstanceOf(
+        ForbiddenException,
+      );
     });
 
     describe('otherwise', () => {
       it('should throw the "NotFoundException"', async () => {
         const mockLink = new Link();
-        mockLink.deleteKey = 'a';
-        mockLink.deletePass = 'b';
+        mockLink.deleteKey = 'abcdef';
+        mockLink.deletePass = 'ghijkl';
         mockLink.id = 0;
-        mockLink.stringId = 'abcdefg';
+        mockLink.stringId = 'abcdef';
         mockLink.url = 'google.com';
 
         jest
@@ -154,9 +158,9 @@ describe('LinksController', () => {
           .mockRejectedValue(new NotFoundException());
         jest.spyOn(service, 'findOneByDeleteKey').mockResolvedValue(mockLink);
 
-        await expect(controller.delete('abcdefg', 'b')).rejects.toBeInstanceOf(
-          NotFoundException,
-        );
+        await expect(
+          controller.delete('mnopqr', 'ghijkl'),
+        ).rejects.toBeInstanceOf(NotFoundException);
       });
     });
   });

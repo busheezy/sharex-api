@@ -48,20 +48,19 @@ describe('FilesController', () => {
   describe('findOne', () => {
     it('should return a file', async () => {
       const mockFile = new File();
-      mockFile.deleteKey = 'a';
-      mockFile.deletePass = 'b';
-      mockFile.fileName = 'c.txt';
+      mockFile.deleteKey = 'abcdef';
+      mockFile.deletePass = 'ghijkl';
+      mockFile.fileName = 'fileName.txt';
       mockFile.fileType = 'text/plain';
       mockFile.id = 0;
-      mockFile.stringId = 'abcdefg';
+      mockFile.stringId = 'abcdef';
 
       jest.spyOn(service, 'findOne').mockResolvedValue(mockFile);
-
       jest
         .spyOn(service, 'streamFile')
         .mockReturnValue(new StreamableFile(Buffer.from('')));
 
-      expect(await controller.findOne('abcdefg', mockRes)).toBeInstanceOf(
+      expect(await controller.findOne('abcdef', mockRes)).toBeInstanceOf(
         StreamableFile,
       );
     });
@@ -73,7 +72,7 @@ describe('FilesController', () => {
           .mockRejectedValue(new NotFoundException());
 
         await expect(
-          controller.findOne('abcdefg', mockRes),
+          controller.findOne('abcdef', mockRes),
         ).rejects.toBeInstanceOf(NotFoundException);
       });
     });
@@ -82,12 +81,12 @@ describe('FilesController', () => {
   describe('create', () => {
     it('should create a file', async () => {
       const file = new File();
-      file.deleteKey = 'a';
-      file.deletePass = 'b';
-      file.fileName = 'c.txt';
+      file.deleteKey = 'abcdef';
+      file.deletePass = 'ghijkl';
+      file.fileName = 'fileName.txt';
       file.fileType = 'text/plain';
       file.id = 0;
-      file.stringId = 'abcdefg';
+      file.stringId = 'abcdef';
 
       jest.spyOn(service, 'create').mockResolvedValue(file);
 
@@ -111,15 +110,15 @@ describe('FilesController', () => {
   describe('deleteCode', () => {
     it('should return a file by delete key', async () => {
       const mockFile = new File();
-      mockFile.deleteKey = 'a';
-      mockFile.deletePass = 'b';
-      mockFile.fileName = 'c.txt';
+      mockFile.deleteKey = 'abcdef';
+      mockFile.deletePass = 'ghijkl';
+      mockFile.fileName = 'fileName.txt';
       mockFile.fileType = 'text/plain';
       mockFile.id = 0;
-      mockFile.stringId = 'abcdefg';
+      mockFile.stringId = 'abcdef';
 
       jest.spyOn(service, 'findOneByDeleteKey').mockResolvedValue(mockFile);
-      expect(await controller.deleteCode('abcdefg')).toBe('b');
+      expect(await controller.deleteCode('abcdef')).toBe('ghijkl');
     });
 
     describe('otherwise', () => {
@@ -128,7 +127,7 @@ describe('FilesController', () => {
           .spyOn(service, 'findOneByDeleteKey')
           .mockRejectedValue(new NotFoundException());
 
-        await expect(controller.deleteCode('abcdefg')).rejects.toBeInstanceOf(
+        await expect(controller.deleteCode('abcdef')).rejects.toBeInstanceOf(
           NotFoundException,
         );
       });
@@ -136,35 +135,39 @@ describe('FilesController', () => {
   });
 
   describe('delete', () => {
-    it('should return a file by delete key', async () => {
+    it('should delete a file by delete key', async () => {
       const mockFile = new File();
-      mockFile.deleteKey = 'a';
-      mockFile.deletePass = 'b';
-      mockFile.fileName = 'c.txt';
+      mockFile.deleteKey = 'abcdef';
+      mockFile.deletePass = 'ghijkl';
+      mockFile.fileName = 'fileName.txt';
       mockFile.fileType = 'text/plain';
       mockFile.id = 0;
-      mockFile.stringId = 'abcdefg';
+      mockFile.stringId = 'abcdef';
 
       jest.spyOn(service, 'delete').mockResolvedValue();
       jest.spyOn(service, 'deleteFile').mockResolvedValue();
       jest.spyOn(service, 'findOneByDeleteKey').mockResolvedValue(mockFile);
-      await expect(controller.delete('abcdefg', 'b')).resolves.toBe('Deleted');
+
+      await expect(controller.delete('abcdef', 'ghijkl')).resolves.toBe(
+        'Deleted',
+      );
     });
 
     it('reject if missing password', async () => {
       const mockFile = new File();
-      mockFile.deleteKey = 'a';
-      mockFile.deletePass = 'b';
-      mockFile.fileName = 'c.txt';
+      mockFile.deleteKey = 'abcdef';
+      mockFile.deletePass = 'ghijkl';
+      mockFile.fileName = 'fileName.txt';
       mockFile.fileType = 'text/plain';
       mockFile.id = 0;
-      mockFile.stringId = 'abcdefg';
+      mockFile.stringId = 'abcdef';
 
       jest.spyOn(service, 'delete').mockResolvedValue();
       jest.spyOn(service, 'findOneByDeleteKey').mockResolvedValue(mockFile);
-      await expect(
-        controller.delete('abcdefg', 'asdfas'),
-      ).rejects.toBeInstanceOf(ForbiddenException);
+
+      await expect(controller.delete('abcdef', '')).rejects.toBeInstanceOf(
+        ForbiddenException,
+      );
     });
 
     describe('otherwise', () => {
@@ -173,9 +176,9 @@ describe('FilesController', () => {
           .spyOn(service, 'findOneByDeleteKey')
           .mockRejectedValue(new NotFoundException());
 
-        await expect(controller.delete('aasdf', 'b')).rejects.toBeInstanceOf(
-          NotFoundException,
-        );
+        await expect(
+          controller.delete('mnopqr', 'ghijkl'),
+        ).rejects.toBeInstanceOf(NotFoundException);
       });
     });
   });

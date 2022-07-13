@@ -48,12 +48,12 @@ describe('ImagesController', () => {
   describe('findOne', () => {
     it('should return a image', async () => {
       const mockImage = new Image();
-      mockImage.deleteKey = 'a';
-      mockImage.deletePass = 'b';
-      mockImage.fileName = 'c.txt';
-      mockImage.fileType = 'text/plain';
+      mockImage.deleteKey = 'abcdef';
+      mockImage.deletePass = 'ghijkl';
+      mockImage.fileName = 'fileName.png';
+      mockImage.fileType = 'image/png';
       mockImage.id = 0;
-      mockImage.stringId = 'abcdefg';
+      mockImage.stringId = 'abcdef';
 
       jest.spyOn(service, 'findOne').mockResolvedValue(mockImage);
 
@@ -61,7 +61,7 @@ describe('ImagesController', () => {
         .spyOn(service, 'streamImage')
         .mockReturnValue(new StreamableFile(Buffer.from('')));
 
-      expect(await controller.findOne('abcdefg', mockRes)).toBeInstanceOf(
+      expect(await controller.findOne('abcdef', mockRes)).toBeInstanceOf(
         StreamableFile,
       );
     });
@@ -73,7 +73,7 @@ describe('ImagesController', () => {
           .mockRejectedValue(new NotFoundException());
 
         await expect(
-          controller.findOne('abcdefg', mockRes),
+          controller.findOne('abcdef', mockRes),
         ).rejects.toBeInstanceOf(NotFoundException);
       });
     });
@@ -82,12 +82,12 @@ describe('ImagesController', () => {
   describe('findOneThumbnail', () => {
     it('should return a image', async () => {
       const mockImage = new Image();
-      mockImage.deleteKey = 'a';
-      mockImage.deletePass = 'b';
-      mockImage.fileName = 'c.txt';
-      mockImage.fileType = 'text/plain';
+      mockImage.deleteKey = 'abcdef';
+      mockImage.deletePass = 'ghijkl';
+      mockImage.fileName = 'fileName.png';
+      mockImage.fileType = 'image/png';
       mockImage.id = 0;
-      mockImage.stringId = 'abcdefg';
+      mockImage.stringId = 'abcdef';
 
       jest.spyOn(service, 'findOne').mockResolvedValue(mockImage);
 
@@ -96,7 +96,7 @@ describe('ImagesController', () => {
         .mockReturnValue(new StreamableFile(Buffer.from('')));
 
       expect(
-        await controller.findOneThumbnail('abcdefg', mockRes),
+        await controller.findOneThumbnail('abcdef', mockRes),
       ).toBeInstanceOf(StreamableFile);
     });
 
@@ -107,7 +107,7 @@ describe('ImagesController', () => {
           .mockRejectedValue(new NotFoundException());
 
         await expect(
-          controller.findOne('abcdefg', mockRes),
+          controller.findOne('abcdef', mockRes),
         ).rejects.toBeInstanceOf(NotFoundException);
       });
     });
@@ -116,12 +116,12 @@ describe('ImagesController', () => {
   describe('create', () => {
     it('should create a image', async () => {
       const image = new Image();
-      image.deleteKey = 'a';
-      image.deletePass = 'b';
-      image.fileName = 'c.txt';
+      image.deleteKey = 'abcdef';
+      image.deletePass = 'ghijkl';
+      image.fileName = 'fileName.png';
       image.fileType = 'text/plain';
       image.id = 0;
-      image.stringId = 'abcdefg';
+      image.stringId = 'abcdef';
 
       jest.spyOn(service, 'create').mockResolvedValue(image);
       jest.spyOn(service, 'generateThumbnail').mockResolvedValue();
@@ -131,8 +131,8 @@ describe('ImagesController', () => {
         destination: './',
         fieldname: 'image',
         filename: 'alksjdhfaksjdfhasfd',
-        mimetype: 'text/plain',
-        originalname: 'image.txt',
+        mimetype: 'image/png',
+        originalname: 'fileName.png',
         path: './uploads/images/alksjdhfaksjdfhasfd',
         size: 123123,
         stream: new Readable(),
@@ -146,15 +146,15 @@ describe('ImagesController', () => {
   describe('deleteCode', () => {
     it('should return a image by delete key', async () => {
       const mockImage = new Image();
-      mockImage.deleteKey = 'a';
-      mockImage.deletePass = 'b';
-      mockImage.fileName = 'c.txt';
-      mockImage.fileType = 'text/plain';
+      mockImage.deleteKey = 'abcdef';
+      mockImage.deletePass = 'ghijkl';
+      mockImage.fileName = 'fileName.png';
+      mockImage.fileType = 'image/png';
       mockImage.id = 0;
-      mockImage.stringId = 'abcdefg';
+      mockImage.stringId = 'abcdef';
 
       jest.spyOn(service, 'findOneByDeleteKey').mockResolvedValue(mockImage);
-      expect(await controller.deleteCode('abcdefg')).toBe('b');
+      expect(await controller.deleteCode('abcdef')).toBe('ghijkl');
     });
 
     describe('otherwise', () => {
@@ -163,7 +163,7 @@ describe('ImagesController', () => {
           .spyOn(service, 'findOneByDeleteKey')
           .mockRejectedValue(new NotFoundException());
 
-        await expect(controller.deleteCode('abcdefg')).rejects.toBeInstanceOf(
+        await expect(controller.deleteCode('abcdef')).rejects.toBeInstanceOf(
           NotFoundException,
         );
       });
@@ -171,35 +171,39 @@ describe('ImagesController', () => {
   });
 
   describe('delete', () => {
-    it('should return a image by delete key', async () => {
+    it('should delete image by delete key', async () => {
       const mockImage = new Image();
-      mockImage.deleteKey = 'a';
-      mockImage.deletePass = 'b';
-      mockImage.fileName = 'c.txt';
+      mockImage.deleteKey = 'abcdef';
+      mockImage.deletePass = 'ghijkl';
+      mockImage.fileName = 'fileName.png';
       mockImage.fileType = 'text/plain';
       mockImage.id = 0;
-      mockImage.stringId = 'abcdefg';
+      mockImage.stringId = 'abcdef';
 
       jest.spyOn(service, 'delete').mockResolvedValue();
       jest.spyOn(service, 'deleteImages').mockResolvedValue();
       jest.spyOn(service, 'findOneByDeleteKey').mockResolvedValue(mockImage);
-      await expect(controller.delete('abcdefg', 'b')).resolves.toBe('Deleted');
+
+      await expect(controller.delete('abcdef', 'ghijkl')).resolves.toBe(
+        'Deleted',
+      );
     });
 
     it('reject if missing password', async () => {
       const mockImage = new Image();
-      mockImage.deleteKey = 'a';
-      mockImage.deletePass = 'b';
-      mockImage.fileName = 'c.txt';
+      mockImage.deleteKey = 'abcdef';
+      mockImage.deletePass = 'ghijkl';
+      mockImage.fileName = 'fileName.png';
       mockImage.fileType = 'text/plain';
       mockImage.id = 0;
-      mockImage.stringId = 'abcdefg';
+      mockImage.stringId = 'abcdef';
 
       jest.spyOn(service, 'delete').mockResolvedValue();
       jest.spyOn(service, 'findOneByDeleteKey').mockResolvedValue(mockImage);
-      await expect(
-        controller.delete('abcdefg', 'asdfas'),
-      ).rejects.toBeInstanceOf(ForbiddenException);
+
+      await expect(controller.delete('abcdef', '')).rejects.toBeInstanceOf(
+        ForbiddenException,
+      );
     });
 
     describe('otherwise', () => {
@@ -208,9 +212,9 @@ describe('ImagesController', () => {
           .spyOn(service, 'findOneByDeleteKey')
           .mockRejectedValue(new NotFoundException());
 
-        await expect(controller.delete('aasdf', 'b')).rejects.toBeInstanceOf(
-          NotFoundException,
-        );
+        await expect(
+          controller.delete('mnopqr', 'ghijkl'),
+        ).rejects.toBeInstanceOf(NotFoundException);
       });
     });
   });

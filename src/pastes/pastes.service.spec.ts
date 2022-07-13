@@ -90,7 +90,7 @@ describe('PastesService', () => {
   describe('findOne', () => {
     describe('when paste with string ID exists', () => {
       it('should return the paste object', async () => {
-        const pasteId = 'abcdefg';
+        const pasteId = 'abcdef';
         const expectedPaste = {};
 
         pasteRepository.findOne.mockReturnValue(expectedPaste);
@@ -101,7 +101,7 @@ describe('PastesService', () => {
 
     describe('otherwise', () => {
       it('should throw the "NotFoundException"', async () => {
-        const pasteId = 'abcdefg';
+        const pasteId = 'abcdef';
         pasteRepository.findOne.mockReturnValue(undefined);
 
         try {
@@ -118,7 +118,7 @@ describe('PastesService', () => {
   describe('findOneByDeleteKey', () => {
     describe('when paste with delete key exists', () => {
       it('should return the paste object', async () => {
-        const deleteKey = 'abcdefg';
+        const deleteKey = 'abcdef';
         const expectedPaste = {};
 
         pasteRepository.findOne.mockReturnValue(expectedPaste);
@@ -129,7 +129,7 @@ describe('PastesService', () => {
 
     describe('otherwise', () => {
       it('should throw the "NotFoundException"', async () => {
-        const deleteKey = 'abcdefg';
+        const deleteKey = 'abcdef';
         pasteRepository.findOne.mockReturnValue(undefined);
 
         try {
@@ -146,7 +146,7 @@ describe('PastesService', () => {
   describe('delete', () => {
     describe('when deleting', () => {
       it('no errors', async () => {
-        const deleteKey = 'abcdefg';
+        const deleteKey = 'abcdef';
         pasteRepository.delete.mockReturnValue({ affected: 1 });
         await service.delete(deleteKey);
         expect(pasteRepository.delete).toBeCalled();
@@ -155,7 +155,7 @@ describe('PastesService', () => {
 
     describe('otherwise', () => {
       it('it should explode', async () => {
-        const deleteKey = 'abcdefg';
+        const deleteKey = 'abcdef';
 
         pasteRepository.delete.mockRejectedValue(NotFoundException);
         pasteRepository.delete.mockReturnValue({ affected: 0 });

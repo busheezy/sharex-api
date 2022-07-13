@@ -41,16 +41,16 @@ describe('PastesController', () => {
   describe('findOne', () => {
     it('should return a paste', async () => {
       const pasteSample = new Paste();
-      pasteSample.deleteKey = 'a';
-      pasteSample.deletePass = 'b';
-      pasteSample.fileName = 'c.txt';
+      pasteSample.deleteKey = 'abcdef';
+      pasteSample.deletePass = 'ghijkl';
+      pasteSample.fileName = 'fileName.txt';
       pasteSample.fileType = 'text/plain';
       pasteSample.id = 0;
-      pasteSample.stringId = 'abcdefg';
+      pasteSample.stringId = 'abcdef';
       pasteSample.content = 'bird';
 
       jest.spyOn(service, 'findOne').mockResolvedValue(pasteSample);
-      expect(await controller.findOne('abcdefg')).toBe('bird');
+      expect(await controller.findOne('abcdef')).toBe('bird');
     });
 
     describe('otherwise', () => {
@@ -59,7 +59,7 @@ describe('PastesController', () => {
           .spyOn(service, 'findOne')
           .mockRejectedValue(new NotFoundException());
 
-        await expect(controller.findOne('abcdefg')).rejects.toBeInstanceOf(
+        await expect(controller.findOne('abcdef')).rejects.toBeInstanceOf(
           NotFoundException,
         );
       });
@@ -68,15 +68,15 @@ describe('PastesController', () => {
 
   describe('create', () => {
     it('should create a paste', async () => {
-      const paste = new GetPasteDto();
-      paste.deleteKey = 'a';
-      paste.deletePass = 'b';
-      paste.fileName = 'c.txt';
-      paste.fileType = 'text/plain';
-      paste.id = 0;
-      paste.stringId = 'abcdefg';
+      const pasteSample = new GetPasteDto();
+      pasteSample.deleteKey = 'abcdef';
+      pasteSample.deletePass = 'ghijkl';
+      pasteSample.fileName = 'fileName.txt';
+      pasteSample.fileType = 'text/plain';
+      pasteSample.id = 0;
+      pasteSample.stringId = 'abcdef';
 
-      jest.spyOn(service, 'create').mockResolvedValue(paste);
+      jest.spyOn(service, 'create').mockResolvedValue(pasteSample);
 
       const mockFile: Express.Multer.File = {
         buffer: Buffer.from(''),
@@ -100,16 +100,17 @@ describe('PastesController', () => {
   describe('deleteCode', () => {
     it('should return a paste by delete key', async () => {
       const pasteSample = new Paste();
-      pasteSample.deleteKey = 'a';
-      pasteSample.deletePass = 'b';
-      pasteSample.fileName = 'c.txt';
+      pasteSample.deleteKey = 'abcdef';
+      pasteSample.deletePass = 'ghijkl';
+      pasteSample.fileName = 'fileName.txt';
       pasteSample.fileType = 'text/plain';
       pasteSample.id = 0;
-      pasteSample.stringId = 'abcdefg';
+      pasteSample.stringId = 'abcdef';
       pasteSample.content = 'bird';
 
       jest.spyOn(service, 'findOneByDeleteKey').mockResolvedValue(pasteSample);
-      expect(await controller.deleteCode('abcdefg')).toBe('b');
+
+      expect(await controller.deleteCode('abcdef')).toBe('ghijkl');
     });
 
     describe('otherwise', () => {
@@ -118,7 +119,7 @@ describe('PastesController', () => {
           .spyOn(service, 'findOneByDeleteKey')
           .mockRejectedValue(new NotFoundException());
 
-        await expect(controller.deleteCode('abcdefg')).rejects.toBeInstanceOf(
+        await expect(controller.deleteCode('abcdef')).rejects.toBeInstanceOf(
           NotFoundException,
         );
       });
@@ -126,47 +127,51 @@ describe('PastesController', () => {
   });
 
   describe('delete', () => {
-    it('should return a paste by delete key', async () => {
+    it('should delete a paste by delete key', async () => {
       const pasteSample = new Paste();
-      pasteSample.deleteKey = 'a';
-      pasteSample.deletePass = 'b';
-      pasteSample.fileName = 'c.txt';
+      pasteSample.deleteKey = 'abcdef';
+      pasteSample.deletePass = 'ghijkl';
+      pasteSample.fileName = 'fileName.txt';
       pasteSample.fileType = 'text/plain';
       pasteSample.id = 0;
-      pasteSample.stringId = 'abcdefg';
+      pasteSample.stringId = 'abcdef';
       pasteSample.content = 'bird';
 
       jest.spyOn(service, 'delete').mockResolvedValue();
       jest.spyOn(service, 'findOneByDeleteKey').mockResolvedValue(pasteSample);
-      await expect(controller.delete('abcdefg', 'b')).resolves.toBe('Deleted');
+
+      await expect(controller.delete('abcdef', 'ghijkl')).resolves.toBe(
+        'Deleted',
+      );
     });
 
     it('reject if missing password', async () => {
       const pasteSample = new Paste();
-      pasteSample.deleteKey = 'a';
-      pasteSample.deletePass = 'b';
-      pasteSample.fileName = 'c.txt';
+      pasteSample.deleteKey = 'abcdef';
+      pasteSample.deletePass = 'ghijkl';
+      pasteSample.fileName = 'fileName.txt';
       pasteSample.fileType = 'text/plain';
       pasteSample.id = 0;
-      pasteSample.stringId = 'abcdefg';
+      pasteSample.stringId = 'abcdef';
       pasteSample.content = 'bird';
 
       jest.spyOn(service, 'delete').mockResolvedValue();
       jest.spyOn(service, 'findOneByDeleteKey').mockResolvedValue(pasteSample);
-      await expect(
-        controller.delete('abcdefg', 'asdfas'),
-      ).rejects.toBeInstanceOf(ForbiddenException);
+
+      await expect(controller.delete('abcdef', '')).rejects.toBeInstanceOf(
+        ForbiddenException,
+      );
     });
 
     describe('otherwise', () => {
       it('should throw the "NotFoundException"', async () => {
         const pasteSample = new Paste();
-        pasteSample.deleteKey = 'a';
-        pasteSample.deletePass = 'b';
-        pasteSample.fileName = 'c.txt';
+        pasteSample.deleteKey = 'abcdef';
+        pasteSample.deletePass = 'ghijkl';
+        pasteSample.fileName = 'fileName.txt';
         pasteSample.fileType = 'text/plain';
         pasteSample.id = 0;
-        pasteSample.stringId = 'abcdefg';
+        pasteSample.stringId = 'abcdef';
         pasteSample.content = 'bird';
 
         jest
@@ -176,9 +181,9 @@ describe('PastesController', () => {
           .spyOn(service, 'findOneByDeleteKey')
           .mockResolvedValue(pasteSample);
 
-        await expect(controller.delete('abcdefg', 'b')).rejects.toBeInstanceOf(
-          NotFoundException,
-        );
+        await expect(
+          controller.delete('mnopqr', 'ghijkl'),
+        ).rejects.toBeInstanceOf(NotFoundException);
       });
     });
   });

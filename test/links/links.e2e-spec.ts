@@ -10,7 +10,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import * as request from 'supertest';
 import { Link } from '../../src/links/entities/link.entity';
 
-describe('[Feature] Links - /p', () => {
+describe('[Feature] Links - /l', () => {
   let app: INestApplication;
   let httpServer: HttpServer;
 

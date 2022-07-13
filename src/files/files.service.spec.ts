@@ -66,7 +66,7 @@ describe('FilesService', () => {
   describe('findOne', () => {
     describe('when file with string ID exists', () => {
       it('should return the file object', async () => {
-        const fileId = 'abcdefg';
+        const fileId = 'abcdef';
         const expectedFile = {};
 
         fileRepository.findOne.mockReturnValue(expectedFile);
@@ -77,7 +77,7 @@ describe('FilesService', () => {
 
     describe('otherwise', () => {
       it('should throw the "NotFoundException"', async () => {
-        const fileId = 'abcdefg';
+        const fileId = 'abcdef';
         fileRepository.findOne.mockReturnValue(undefined);
 
         try {
@@ -94,7 +94,7 @@ describe('FilesService', () => {
   describe('findOneByDeleteKey', () => {
     describe('when file with delete key exists', () => {
       it('should return the file object', async () => {
-        const deleteKey = 'abcdefg';
+        const deleteKey = 'abcdef';
         const expectedFile = {};
 
         fileRepository.findOne.mockReturnValue(expectedFile);
@@ -105,7 +105,7 @@ describe('FilesService', () => {
 
     describe('otherwise', () => {
       it('should throw the "NotFoundException"', async () => {
-        const deleteKey = 'abcdefg';
+        const deleteKey = 'abcdef';
         fileRepository.findOne.mockReturnValue(undefined);
 
         try {
@@ -122,7 +122,7 @@ describe('FilesService', () => {
   describe('delete', () => {
     describe('when deleting', () => {
       it('no errors', async () => {
-        const deleteKey = 'abcdefg';
+        const deleteKey = 'abcdef';
         fileRepository.delete.mockReturnValue({ affected: 1 });
         await service.delete(deleteKey);
         expect(fileRepository.delete).toBeCalled();
@@ -131,7 +131,7 @@ describe('FilesService', () => {
 
     describe('otherwise', () => {
       it('it should explode', async () => {
-        const deleteKey = 'abcdefg';
+        const deleteKey = 'abcdef';
 
         fileRepository.delete.mockRejectedValue(NotFoundException);
         fileRepository.delete.mockReturnValue({ affected: 0 });
