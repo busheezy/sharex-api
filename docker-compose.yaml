@@ -1,16 +1,32 @@
 version: '3'
+
+networks:
+  sharex:
+
 services:
-  db-dev:
+  db:
     image: postgres
-    restart: always
+    restart: unless-stopped
+    networks:
+      - sharex
     ports:
       - 127.0.0.1:5432:5432
     environment:
-      POSTGRES_PASSWORD: "${DB_PASSWORD}"
-  db-test:
-    image: postgres
-    restart: always
+      POSTGRES_PASSWORD: '${DB_PASSWORD}'
+
+  api:
+    image: nestappsharex:latest
+    restart: unless-stopped
+    networks:
+      - sharex
     ports:
-      - 127.0.0.1:5433:5432
+      - 127.0.0.1:3000:3000
+    depends_on:
+      - db
     environment:
-      POSTGRES_PASSWORD: "testing!"
+      API_KEY: '${API_KEY}'
+      DB_HOST: '${DB_HOST}'
+      DB_PORT: '${DB_PORT}'
+      DB_DATABASE: '${DB_DATABASE}'
+      DB_USERNAME: '${DB_USERNAME}'
+      DB_PASSWORD: '${DB_PASSWORD}'
