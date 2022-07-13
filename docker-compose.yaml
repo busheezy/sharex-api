@@ -15,7 +15,7 @@ services:
       POSTGRES_PASSWORD: '${DB_PASSWORD}'
 
   api:
-    image: nestappsharex:latest
+    image: busheezy/nestappsharex:latest
     restart: unless-stopped
     networks:
       - sharex
