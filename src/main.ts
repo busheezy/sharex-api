@@ -3,6 +3,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { API_KEY_NAME, API_KEY_TYPE } from './auth/auth.consts';
+import { CommonConfigService } from './common/common.config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -20,6 +21,8 @@ async function bootstrap() {
     }),
   );
 
+  const commonConfigService = app.get(CommonConfigService);
+
   const config = new DocumentBuilder()
     .setTitle('ShareX API')
     .setDescription('API for personal sharex server.')
@@ -28,6 +31,7 @@ async function bootstrap() {
       { type: API_KEY_TYPE, name: API_KEY_NAME, in: 'header' },
       API_KEY_NAME,
     )
+    .addServer(commonConfigService.apiUrl)
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

@@ -1,32 +1,16 @@
 version: '3'
-
-networks:
-  sharex:
-
 services:
-  db:
+  db-dev:
     image: postgres
-    restart: unless-stopped
-    networks:
-      - sharex
+    restart: always
     ports:
       - 127.0.0.1:5432:5432
     environment:
-      POSTGRES_PASSWORD: '${DB_PASSWORD}'
-
-  api:
-    image: busheezy/nestappsharex:latest
-    restart: unless-stopped
-    networks:
-      - sharex
+      POSTGRES_PASSWORD: "${DB_PASSWORD}"
+  db-test:
+    image: postgres
+    restart: always
     ports:
-      - 127.0.0.1:3000:3000
-    depends_on:
-      - db
+      - 127.0.0.1:5433:5432
     environment:
-      API_KEY: '${API_KEY}'
-      DB_HOST: '${DB_HOST}'
-      DB_PORT: '${DB_PORT}'
-      DB_DATABASE: '${DB_DATABASE}'
-      DB_USERNAME: '${DB_USERNAME}'
-      DB_PASSWORD: '${DB_PASSWORD}'
+      POSTGRES_PASSWORD: "testing!"

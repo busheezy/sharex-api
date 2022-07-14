@@ -13,4 +13,8 @@ export class CommonConfigService {
   get apiKey(): string {
     return this.configService.get('API_KEY');
   }
+
+  get apiUrl(): string {
+    return this.configService.get('API_URL');
+  }
 }

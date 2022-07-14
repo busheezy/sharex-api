@@ -20,6 +20,12 @@ class EnvironmentVariables {
 
   @IsString()
   DB_DATABASE: string;
+
+  @IsString()
+  API_KEY: string;
+
+  @IsString()
+  API_URL: string;
 }
 
 export function validate(config: Record<string, unknown>) {
