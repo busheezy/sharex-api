@@ -14,7 +14,7 @@ export class CommonConfigService {
     return this.configService.get('API_KEY');
   }
 
-  get apiUrl(): string {
-    return this.configService.get('API_URL');
+  get frontApiUrl(): string {
+    return this.configService.get('FRONT_API_URL');
   }
 }

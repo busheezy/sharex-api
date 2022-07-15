@@ -25,7 +25,7 @@ class EnvironmentVariables {
   API_KEY: string;
 
   @IsString()
-  API_URL: string;
+  FRONT_API_URL: string;
 }
 
 export function validate(config: Record<string, unknown>) {

@@ -31,7 +31,7 @@ async function bootstrap() {
       { type: API_KEY_TYPE, name: API_KEY_NAME, in: 'header' },
       API_KEY_NAME,
     )
-    .addServer(commonConfigService.apiUrl)
+    .addServer(`${commonConfigService.frontApiUrl}/api`)
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
