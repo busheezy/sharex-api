@@ -20,7 +20,8 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "docker:up": "docker-compose up db-dev",
-    "docker:build": "docker build --pull --rm -t sharex-api:latest .",
+    "docker:build": "docker build --pull --rm -t busheezy/sharex-api:latest .",
+    "docker:push": "docker push busheezy/sharex-api:latest",
     "pretest:e2e": "docker-compose up -d db-test",
     "posttest:e2e": "docker-compose stop db-test && docker-compose rm -f db-test"
   },
