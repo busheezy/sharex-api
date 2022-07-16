@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException, StreamableFile } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  OnModuleInit,
+  StreamableFile,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CommonService } from '../common/common.service';
@@ -7,15 +12,27 @@ import * as sharp from 'sharp';
 import { join } from 'node:path';
 import { unlink } from 'node:fs/promises';
 import { createReadStream } from 'node:fs';
+import { ensureDir } from 'fs-extra';
 
 @Injectable()
-export class ImagesService {
+export class ImagesService implements OnModuleInit {
   constructor(
     @InjectRepository(Image)
     private imageRepo: Repository<Image>,
 
     private readonly commonService: CommonService,
   ) {}
+
+  async onModuleInit() {
+    await this.createDirs();
+  }
+
+  async createDirs() {
+    const thumbnailImagesPath = join(process.cwd(), 'thumbnails', 'images');
+
+    await ensureDir(thumbnailImagesPath);
+  }
+
   async findOne(stringId: string): Promise<Image> {
     const image = await this.imageRepo.findOne({
       where: {
