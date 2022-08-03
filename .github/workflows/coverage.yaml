@@ -1,18 +1,22 @@
-name: 'coverage'
+name: "coverage"
+
 on:
-    pull_request:
-        branches:
-            - master
-            - main
+  pull_request:
+    branches:
+      - master
+      - main
+  workflow_dispatch:
+
 jobs:
-    coverage:
-        permissions:
-            checks: write
-            pull-requests: write
-            contents: write
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v1
-            - uses: ArtiomTr/jest-coverage-report-action@v2
+  coverage:
+    permissions:
+      checks: write
+      pull-requests: write
+      contents: write
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - uses: ArtiomTr/jest-coverage-report-action@v2
         with:
           package-manager: pnpm
