@@ -68,9 +68,7 @@ describe('ImagesController', () => {
 
     describe('otherwise', () => {
       it('should throw the "NotFoundException"', async () => {
-        jest
-          .spyOn(service, 'findOne')
-          .mockRejectedValue(new NotFoundException());
+        jest.spyOn(service, 'findOne').mockReturnValue(null);
 
         await expect(
           controller.findOne('abcdef', mockRes),
@@ -102,9 +100,15 @@ describe('ImagesController', () => {
 
     describe('otherwise', () => {
       it('should throw the "NotFoundException"', async () => {
-        jest
-          .spyOn(service, 'findOne')
-          .mockRejectedValue(new NotFoundException());
+        jest.spyOn(service, 'streamImageThumbnail').mockReturnValue(null);
+
+        await expect(
+          controller.findOne('abcdef', mockRes),
+        ).rejects.toBeInstanceOf(TypeError);
+      });
+
+      it('should throw the "NotFoundException"', async () => {
+        jest.spyOn(service, 'findOne').mockReturnValue(null);
 
         await expect(
           controller.findOne('abcdef', mockRes),
@@ -159,9 +163,7 @@ describe('ImagesController', () => {
 
     describe('otherwise', () => {
       it('should throw the "NotFoundException"', async () => {
-        jest
-          .spyOn(service, 'findOneByDeleteKey')
-          .mockRejectedValue(new NotFoundException());
+        jest.spyOn(service, 'findOneByDeleteKey').mockReturnValue(null);
 
         await expect(controller.deleteCode('abcdef')).rejects.toBeInstanceOf(
           NotFoundException,
@@ -208,9 +210,7 @@ describe('ImagesController', () => {
 
     describe('otherwise', () => {
       it('should throw the "NotFoundException"', async () => {
-        jest
-          .spyOn(service, 'findOneByDeleteKey')
-          .mockRejectedValue(new NotFoundException());
+        jest.spyOn(service, 'findOneByDeleteKey').mockReturnValue(null);
 
         await expect(
           controller.delete('mnopqr', 'ghijkl'),

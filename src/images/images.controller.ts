@@ -68,10 +68,6 @@ export class ImagesController {
   ): Promise<StreamableFile> {
     const image = await this.imagesService.findOne(stringId);
 
-    if (!image) {
-      throw new NotFoundException();
-    }
-
     res.set({
       'Content-Type': image.fileType,
     });

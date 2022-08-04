@@ -63,10 +63,6 @@ export class FilesController {
   async deleteCode(@Param('key') key: string) {
     const file = await this.filesService.findOneByDeleteKey(key);
 
-    if (!file) {
-      throw new NotFoundException();
-    }
-
     const { deletePass } = file;
 
     return deletePass;

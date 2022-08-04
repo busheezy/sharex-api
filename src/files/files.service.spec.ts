@@ -1,4 +1,4 @@
-import { NotFoundException } from '@nestjs/common';
+import { NotFoundException, StreamableFile } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Readable } from 'node:stream';
@@ -6,6 +6,14 @@ import { CommonService } from '../common/common.service';
 import { createMockRepository, MockRepository } from '../common/mock.repo';
 import { File } from './entities/file.entity';
 import { FilesService } from './files.service';
+
+jest.mock('node:fs/promises', () => ({
+  unlink: jest.fn().mockResolvedValue(null),
+}));
+
+jest.mock('node:fs', () => ({
+  createReadStream: jest.fn().mockReturnValue({ pipe: jest.fn() }),
+}));
 
 describe('FilesService', () => {
   let service: FilesService;
@@ -53,7 +61,7 @@ describe('FilesService', () => {
           fileType: mockFile.mimetype,
         };
 
-        fileRepository.save.mockReturnValue(expectedFile);
+        jest.spyOn(fileRepository, 'save').mockReturnValue(expectedFile);
 
         const file = await service.create(mockFile);
 
@@ -69,7 +77,7 @@ describe('FilesService', () => {
         const fileId = 'abcdef';
         const expectedFile = {};
 
-        fileRepository.findOne.mockReturnValue(expectedFile);
+        jest.spyOn(fileRepository, 'findOne').mockReturnValue(expectedFile);
         const file = await service.findOne(fileId);
         expect(file).toBe(expectedFile);
       });
@@ -78,7 +86,7 @@ describe('FilesService', () => {
     describe('otherwise', () => {
       it('should throw the "NotFoundException"', async () => {
         const fileId = 'abcdef';
-        fileRepository.findOne.mockReturnValue(undefined);
+        jest.spyOn(fileRepository, 'findOne').mockReturnValue(null);
 
         try {
           await service.findOne(fileId);
@@ -97,7 +105,8 @@ describe('FilesService', () => {
         const deleteKey = 'abcdef';
         const expectedFile = {};
 
-        fileRepository.findOne.mockReturnValue(expectedFile);
+        jest.spyOn(fileRepository, 'findOne').mockReturnValue(expectedFile);
+
         const file = await service.findOneByDeleteKey(deleteKey);
         expect(file).toBe(expectedFile);
       });
@@ -106,7 +115,7 @@ describe('FilesService', () => {
     describe('otherwise', () => {
       it('should throw the "NotFoundException"', async () => {
         const deleteKey = 'abcdef';
-        fileRepository.findOne.mockReturnValue(undefined);
+        jest.spyOn(fileRepository, 'findOne').mockReturnValue(undefined);
 
         try {
           await service.findOneByDeleteKey(deleteKey);
@@ -123,7 +132,8 @@ describe('FilesService', () => {
     describe('when deleting', () => {
       it('no errors', async () => {
         const deleteKey = 'abcdef';
-        fileRepository.delete.mockReturnValue({ affected: 1 });
+
+        jest.spyOn(fileRepository, 'delete').mockReturnValue({ affected: 1 });
         await service.delete(deleteKey);
         expect(fileRepository.delete).toBeCalled();
       });
@@ -133,16 +143,48 @@ describe('FilesService', () => {
       it('it should explode', async () => {
         const deleteKey = 'abcdef';
 
-        fileRepository.delete.mockRejectedValue(NotFoundException);
-        fileRepository.delete.mockReturnValue({ affected: 0 });
+        jest.spyOn(fileRepository, 'delete').mockReturnValue({ affected: 0 });
 
         try {
           await service.delete(deleteKey);
-          expect(false).toBeTruthy();
         } catch (err) {
           expect(err).toBeInstanceOf(NotFoundException);
           expect(err.message).toBe('Not Found');
         }
+      });
+    });
+  });
+
+  describe('delete file', () => {
+    const mockFile = new File();
+    mockFile.deleteKey = 'abcdef';
+    mockFile.deletePass = 'ghijkl';
+    mockFile.fileName = 'fileName.txt';
+    mockFile.fileType = 'text/plain';
+    mockFile.id = 0;
+    mockFile.stringId = 'abcdef';
+
+    describe('when deleting file', () => {
+      it('no errors', async () => {
+        const deleteFile = await service.deleteFile(mockFile);
+        expect(deleteFile).toBe(undefined);
+      });
+    });
+  });
+
+  describe('stream file', () => {
+    const mockFile = new File();
+    mockFile.deleteKey = 'abcdef';
+    mockFile.deletePass = 'ghijkl';
+    mockFile.fileName = 'fileName.txt';
+    mockFile.fileType = 'text/plain';
+    mockFile.id = 0;
+    mockFile.stringId = 'abcdef';
+
+    describe('when streaming file', () => {
+      it('no errors', async () => {
+        const deleteFile = service.streamFile(mockFile);
+        expect(deleteFile).toBeInstanceOf(StreamableFile);
       });
     });
   });

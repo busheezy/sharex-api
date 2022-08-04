@@ -11,7 +11,7 @@ const config: Config.InitialOptions = {
   coverageDirectory: '../coverage',
   testEnvironment: 'node',
   verbose: true,
-  coveragePathIgnorePatterns: ['.module.ts'],
+  coveragePathIgnorePatterns: ['.module.ts', '.types.ts', 'main.ts'],
 };
 
 export default config;

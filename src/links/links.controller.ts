@@ -5,7 +5,6 @@ import {
   Get,
   HttpCode,
   HttpStatus,
-  NotFoundException,
   Param,
   Post,
   Redirect,
@@ -29,10 +28,6 @@ export class LinksController {
   async findOne(@Param('id') stringId: string) {
     const link = await this.linksService.findOne(stringId);
 
-    if (!link) {
-      throw new NotFoundException();
-    }
-
     return {
       url: link.url,
       statusCode: HttpStatus.MOVED_PERMANENTLY,
@@ -44,20 +39,12 @@ export class LinksController {
   async create(@Body() createLinkDto: CreateLinkDto) {
     const link = await this.linksService.create(createLinkDto.url);
 
-    if (!link) {
-      throw new NotFoundException();
-    }
-
     return link;
   }
 
   @Get('delete/:key')
   async deleteCode(@Param('key') key: string) {
     const link = await this.linksService.findOneByDeleteKey(key);
-
-    if (!link) {
-      throw new NotFoundException();
-    }
 
     const { deletePass } = link;
 
@@ -67,10 +54,6 @@ export class LinksController {
   @Get('delete/:key/:pass')
   async delete(@Param('key') key: string, @Param('pass') pass: string) {
     const link = await this.linksService.findOneByDeleteKey(key);
-
-    if (!link) {
-      throw new NotFoundException();
-    }
 
     const { deletePass } = link;
 

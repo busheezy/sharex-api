@@ -67,9 +67,7 @@ describe('FilesController', () => {
 
     describe('otherwise', () => {
       it('should throw the "NotFoundException"', async () => {
-        jest
-          .spyOn(service, 'findOne')
-          .mockRejectedValue(new NotFoundException());
+        jest.spyOn(service, 'findOne').mockReturnValue(null);
 
         await expect(
           controller.findOne('abcdef', mockRes),
@@ -119,18 +117,6 @@ describe('FilesController', () => {
 
       jest.spyOn(service, 'findOneByDeleteKey').mockResolvedValue(mockFile);
       expect(await controller.deleteCode('abcdef')).toBe('ghijkl');
-    });
-
-    describe('otherwise', () => {
-      it('should throw the "NotFoundException"', async () => {
-        jest
-          .spyOn(service, 'findOneByDeleteKey')
-          .mockRejectedValue(new NotFoundException());
-
-        await expect(controller.deleteCode('abcdef')).rejects.toBeInstanceOf(
-          NotFoundException,
-        );
-      });
     });
   });
 

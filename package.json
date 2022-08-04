@@ -26,6 +26,7 @@
     "posttest:e2e": "docker-compose stop db-test && docker-compose rm -f db-test"
   },
   "dependencies": {
+    "@golevelup/ts-jest": "^0.3.3",
     "@nestjs/common": "^9.0.3",
     "@nestjs/config": "^2.2.0",
     "@nestjs/core": "^9.0.3",
