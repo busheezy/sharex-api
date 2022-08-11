@@ -66,15 +66,11 @@ It is suggested to use the ShareX API installer docker image. This will generate
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<!-- USAGE EXAMPLES -->
-
 ## Usage
 
 I suggest starting the API with docker-compose. You can find an example [here](https://github.com/busheezy/sharex-api/blob/main/docker-compose.yaml).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-<!-- ROADMAP -->
 
 ## Roadmap
 
@@ -85,7 +81,6 @@ I suggest starting the API with docker-compose. You can find an example [here](h
 See the [open issues](https://github.com/BuSheeZy/sharex-api/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 
 ## Contributing
 
