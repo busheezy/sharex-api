@@ -1,6 +1,7 @@
 name: codacy-coverage-reporter
 
 on:
+  push:
   pull_request:
     branches:
       - master
