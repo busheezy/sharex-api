@@ -16,11 +16,7 @@
   <p align="center">
     This is a Node.js API for ShareX with Docker support. This is ideal if you want to use ShareX with your own server and domain. The API is fully documented with OpenAPI.
     <br />
-    <a href="https://github.com/BuSheeZy/sharex-api"><strong>Explore the docs »</strong></a>
     <br />
-    <br />
-    <a href="https://github.com/BuSheeZy/sharex-api">View Demo</a>
-    ·
     <a href="https://github.com/BuSheeZy/sharex-api/issues">Report Bug</a>
     ·
     <a href="https://github.com/BuSheeZy/sharex-api/issues">Request Feature</a>
