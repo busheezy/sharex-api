@@ -46,10 +46,7 @@
   </ol>
 </details>
 
-
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 ### Built With
 
@@ -70,6 +67,7 @@ It is suggested to use the ShareX API installer docker image. This will generate
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- USAGE EXAMPLES -->
+
 ## Usage
 
 I suggest starting the API with docker-compose. You can find an example [here](https://github.com/busheezy/sharex-api/blob/main/docker-compose.yaml).
@@ -77,17 +75,18 @@ I suggest starting the API with docker-compose. You can find an example [here](h
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- ROADMAP -->
+
 ## Roadmap
 
-- [x] 100% Coverage
-    - [ ] Better test descriptions
-- [x] e2e Testing
+-   [x] 100% Coverage
+    -   [ ] Better test descriptions
+-   [x] e2e Testing
 
 See the [open issues](https://github.com/BuSheeZy/sharex-api/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<!-- CONTRIBUTING -->
+
 ## Contributing
 
 Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
@@ -95,49 +94,59 @@ Contributions are what make the open source community such an amazing place to l
 If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
 Don't forget to give the project a star! Thanks again!
 
- 1. Fork the Project
- 2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
- 3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
- 4. Push to the Branch (`git push origin feature/AmazingFeature`)
- 5. Open a Pull Request
+1.  Fork the Project
+2.  Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3.  Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4.  Push to the Branch (`git push origin feature/AmazingFeature`)
+5.  Open a Pull Request
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<!-- LICENSE -->
 ## License
 
 Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<!-- CONTACT -->
 ## Contact
 
 Ryan Bucshon - [@BuSheeZy_Dev](https://twitter.com/BuSheeZy_Dev) - BuSheeZy@gmail.com
 
-Project Link: [https://github.com/BuSheeZy/sharex-api](https://github.com/BuSheeZy/sharex-api)
+Project Link: <https://github.com/BuSheeZy/sharex-api>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-* [Sikari](https://github.com/Sikarii)
-  - Thanks to Sikari for great feedback.
+-   [Sikari](https://github.com/Sikarii)
+    -   Thanks to Sikari for great feedback.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 [contributors-shield]: https://img.shields.io/github/contributors/BuSheeZy/sharex-api.svg?style=for-the-badge
+
 [contributors-url]: https://github.com/BuSheeZy/sharex-api/graphs/contributors
+
 [forks-shield]: https://img.shields.io/github/forks/BuSheeZy/sharex-api.svg?style=for-the-badge
+
 [forks-url]: https://github.com/BuSheeZy/sharex-api/network/members
+
 [stars-shield]: https://img.shields.io/github/stars/BuSheeZy/sharex-api.svg?style=for-the-badge
+
 [stars-url]: https://github.com/BuSheeZy/sharex-api/stargazers
+
 [issues-shield]: https://img.shields.io/github/issues/BuSheeZy/sharex-api.svg?style=for-the-badge
+
 [issues-url]: https://github.com/BuSheeZy/sharex-api/issues
+
 [license-shield]: https://img.shields.io/github/license/BuSheeZy/sharex-api.svg?style=for-the-badge
+
 [license-url]: https://github.com/BuSheeZy/sharex-api/blob/master/LICENSE.txt
+
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
+
 [linkedin-url]: https://linkedin.com/in/ryan-bucshon
+
 [nest.js]: https://img.shields.io/badge/nestjs-000000?style=for-the-badge&logo=nestjs&logoColor=white
+
 [nest-url]: https://nestjs.com/
