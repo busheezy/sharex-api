@@ -60,7 +60,7 @@
 
 ### Built With
 
-* [![Nest][Nest.js]][Nest-url]
+[![Nest][Nest.js]][Nest-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
