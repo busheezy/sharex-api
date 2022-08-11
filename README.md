@@ -23,7 +23,6 @@
   </p>
 </div>
 
-
 <details>
   <summary>Table of Contents</summary>
   <ol>
@@ -60,8 +59,6 @@
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
 ## Getting Started
 
 ### Prerequisites
@@ -74,16 +71,12 @@ It is suggested to use the ShareX API installer docker image. This will generate
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
 <!-- USAGE EXAMPLES -->
 ## Usage
 
 I suggest starting the API with docker-compose. You can find an example [here](https://github.com/busheezy/sharex-api/blob/main/docker-compose.yaml).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 <!-- ROADMAP -->
 ## Roadmap
@@ -95,8 +88,6 @@ I suggest starting the API with docker-compose. You can find an example [here](h
 See the [open issues](https://github.com/BuSheeZy/sharex-api/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 <!-- CONTRIBUTING -->
 ## Contributing
@@ -114,16 +105,12 @@ Don't forget to give the project a star! Thanks again!
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
 <!-- LICENSE -->
 ## License
 
 Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 <!-- CONTACT -->
 ## Contact
@@ -134,8 +121,6 @@ Project Link: [https://github.com/BuSheeZy/sharex-api](https://github.com/BuShee
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
@@ -143,7 +128,6 @@ Project Link: [https://github.com/BuSheeZy/sharex-api](https://github.com/BuShee
   * Thanks to Sikari for great feedback.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 
 [contributors-shield]: https://img.shields.io/github/contributors/BuSheeZy/sharex-api.svg?style=for-the-badge
 [contributors-url]: https://github.com/BuSheeZy/sharex-api/graphs/contributors
