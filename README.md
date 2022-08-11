@@ -76,6 +76,7 @@ I suggest starting the API with docker-compose. You can find an example [here](h
 
 -   [x] 100% Coverage
     -   [ ] Better test descriptions
+
 -   [x] e2e Testing
 
 See the [open issues](https://github.com/BuSheeZy/sharex-api/issues) for a full list of proposed features (and known issues).
