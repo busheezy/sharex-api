@@ -1,0 +1,7 @@
+---
+engines:
+  duplication:
+    exclude_paths:
+      - "**.spec.ts"
+exclude_paths:
+  - "test/**"
