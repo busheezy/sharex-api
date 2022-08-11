@@ -4,7 +4,7 @@
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
-![Codacy coverage](https://img.shields.io/codacy/coverage/405bde669e1c4330a68293c301d41a6e?style=for-the-badge)
+[![Codacy coverage][codacy]][codacy-url]
 [![MIT License][license-shield]][license-url]
 [![LinkedIn][linkedin-shield]][linkedin-url]
 
@@ -147,3 +147,7 @@ Project Link: <https://github.com/BuSheeZy/sharex-api>
 [nest.js]: https://img.shields.io/badge/nestjs-000000?style=for-the-badge&logo=nestjs&logoColor=white
 
 [nest-url]: https://nestjs.com/
+
+[codacy]: https://img.shields.io/codacy/coverage/405bde669e1c4330a68293c301d41a6e?style=for-the-badge
+
+[codacy-url]: https://app.codacy.com/gh/busheezy/sharex-api/dashboard
