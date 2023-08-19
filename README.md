@@ -63,7 +63,7 @@ This can be ran with docker or node.js directly.
 
 ### Installation
 
-It is suggested to use the ShareX API installer docker image. This will generate all of the required configs and docker-compose files needed for the optimal experience.
+It is suggested to use the ShareX API installer docker image. This will generate all of the required configs and docker-compose files needed for the optimal experience. You can find that [here](https://github.com/busheezy/sharex-api-installer).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
