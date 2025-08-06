@@ -1,18 +1,20 @@
-FROM node:16
+FROM node:20-slim AS base
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
+COPY . /app
+WORKDIR /app
 
-RUN curl -f https://get.pnpm.io/v6.16.js | node - add --global pnpm
+FROM base AS prod-deps
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-lockfile
 
-WORKDIR /nest-sharex
+FROM base AS build
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+RUN pnpm run build
 
-COPY .npmrc package.json pnpm-lock.yaml ./
-
-RUN pnpm install --frozen-lockfile --prod
-
-COPY ./src nest-cli.json tsconfig.json tsconfig.build.json ./
-
-RUN pnpm install @nestjs/cli@^8.0.0 && pnpm build
-
-VOLUME [ "/nest-sharex/uploads", "/nest-sharex/thumbnails" ]
-
+FROM base
+COPY --from=prod-deps /app/node_modules /app/node_modules
+COPY --from=build /app/dist /app/dist
+VOLUME [ "/app/uploads", "/app/thumbnails" ]
 EXPOSE 3000
-CMD [ "pnpm", "run", "start" ]
+CMD [ "node", "dist/src/main.js" ]
