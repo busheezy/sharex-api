@@ -5,6 +5,7 @@ import {
   UploadedFile,
   Param,
   Response,
+  Request,
   Get,
   StreamableFile,
   NotFoundException,
@@ -27,7 +28,7 @@ import { Auth } from '../auth/auth.decorator';
 export class ImagesController {
   constructor(private readonly imagesService: ImagesService) {}
 
-  @Get(':id')
+  @Get(':id*')
   @ApiOkResponse({
     description: 'We are returning the image.',
     schema: {
@@ -39,11 +40,20 @@ export class ImagesController {
   async findOne(
     @Param('id') stringId: string,
     @Response({ passthrough: true }) res,
+    @Request() req,
   ): Promise<StreamableFile> {
     const image = await this.imagesService.findOne(stringId);
 
     if (!image) {
       throw new NotFoundException();
+    }
+
+    const path = req.path;
+
+    const isBasePath = path === `/i/${stringId}`;
+
+    if (isBasePath) {
+      return res.redirect(`/i/${stringId}/${image.originalFileName}`);
     }
 
     res.set({
