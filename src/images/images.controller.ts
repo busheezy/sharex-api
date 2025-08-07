@@ -50,7 +50,7 @@ export class ImagesController {
 
     const path = req.path;
 
-    const isBasePath = path === `/i/${stringId}`;
+    const isBasePath = new RegExp(`^/i/${stringId}/?$`).test(path);
 
     if (isBasePath) {
       return res.redirect(`/i/${stringId}/${image.originalFileName}`);
