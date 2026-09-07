@@ -7,7 +7,7 @@ Self-hosted uploads for images, files, text, and short links. Built with NestJS 
 
 ## Development
 
-Use Node.js 24.19 or newer within the 24.x release line and pnpm 12.3.4. The versions are pinned in `.nvmrc` and `package.json`.
+Use Node.js 24.19 or newer within the 24.x release line and pnpm 12.3.4. Local development defaults to Node 24 in `.nvmrc`. Docker uses Node 26.8.1; CI runs checks and tests on both supported runtimes.
 
 ```sh
 nvm use
