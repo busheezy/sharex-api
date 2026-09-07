@@ -1,9 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Paste } from './entities/paste.entity';
-import { CommonService } from '../common/common.service';
-import { GetPasteDto } from './dto/get-paste.dto';
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { Repository } from "typeorm";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Paste } from "./entities/paste.entity";
+import { CommonService } from "../common/common.service";
+import { GetPasteDto } from "./dto/get-paste.dto";
 
 @Injectable()
 export class PastesService {
@@ -35,7 +35,7 @@ export class PastesService {
     paste.deletePass = this.commonService.randomString();
 
     paste.fileName = file.originalname;
-    paste.content = file.buffer.toString('utf-8');
+    paste.content = file.buffer.toString("utf-8");
     paste.fileType = file.mimetype;
 
     await this.pasteRepo.save(paste);

@@ -1,32 +1,28 @@
-import {
-  INestApplication,
-  ValidationPipe,
-  HttpStatus,
-  HttpServer,
-} from '@nestjs/common';
-import { TestingModule, Test } from '@nestjs/testing';
-import { ImagesModule } from '../../src/images/images.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import * as request from 'supertest';
-import { Image } from '../../src/images/entities/image.entity';
-import { join } from 'node:path';
-import { readFileSync } from 'node:fs';
+import { Server } from "node:http";
+import { INestApplication, ValidationPipe, HttpStatus } from "@nestjs/common";
+import { TestingModule, Test } from "@nestjs/testing";
+import { ImagesModule } from "../../src/images/images.module";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import request from "supertest";
+import { Image } from "../../src/images/entities/image.entity";
+import { join } from "node:path";
+import { readFileSync } from "node:fs";
 
-describe('[Feature] Images - /i', () => {
+describe("[Feature] Images - /i", () => {
   let app: INestApplication;
-  let httpServer: HttpServer;
+  let httpServer: Server;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [
         ImagesModule,
         TypeOrmModule.forRoot({
-          type: 'postgres',
-          host: 'localhost',
+          type: "postgres",
+          host: "localhost",
           port: 5433,
-          username: 'postgres',
-          password: 'testing!',
-          database: 'postgres',
+          username: "postgres",
+          password: "testing!",
+          database: "postgres",
           autoLoadEntities: true,
           synchronize: true,
         }),
@@ -50,39 +46,24 @@ describe('[Feature] Images - /i', () => {
 
   let image: Image;
 
-  const imageToTestPath = join(process.cwd(), 'test', 'images', 'Test.png');
+  const imageToTestPath = join(process.cwd(), "test", "images", "Test.png");
   const imageToTest = readFileSync(imageToTestPath);
 
-  const imageToTestFailPath = join(
-    process.cwd(),
-    'test',
-    'images',
-    'Test2.png',
-  );
+  const imageToTestFailPath = join(process.cwd(), "test", "images", "Test2.png");
   const imageToTestFail = readFileSync(imageToTestFailPath);
 
-  const imageThumbnailToTestPath = join(
-    process.cwd(),
-    'test',
-    'images',
-    'Test-Thumbnail.png',
-  );
+  const imageThumbnailToTestPath = join(process.cwd(), "test", "images", "Test-Thumbnail.png");
   const imageThumbnailToTest = readFileSync(imageThumbnailToTestPath);
 
-  const imageThumbnailToTestFailPath = join(
-    process.cwd(),
-    'test',
-    'images',
-    'Test2-Thumbnail.png',
-  );
+  const imageThumbnailToTestFailPath = join(process.cwd(), "test", "images", "Test2-Thumbnail.png");
   const imageThumbnailToTestFail = readFileSync(imageThumbnailToTestFailPath);
 
-  it('Create [POST /]', () => {
+  it("Create [POST /]", () => {
     return request(httpServer)
-      .post('/i')
-      .attach('image', imageToTest, {
-        filename: 'Test.png',
-        contentType: 'image/png',
+      .post("/i")
+      .attach("image", imageToTest, {
+        filename: "Test.png",
+        contentType: "image/png",
       })
       .expect(HttpStatus.CREATED)
       .then(({ body }) => {
@@ -91,9 +72,10 @@ describe('[Feature] Images - /i', () => {
       });
   });
 
-  it('FindOne [GET /:id]', () => {
+  it("FindOne [GET /:id]", () => {
     return request(httpServer)
       .get(`/i/${image.stringId}`)
+      .redirects(1)
       .expect(HttpStatus.OK)
       .then(({ body }) => {
         expect(body).toEqual(imageToTest);
@@ -101,7 +83,7 @@ describe('[Feature] Images - /i', () => {
       });
   });
 
-  it('FindOne [GET /:id/thumbnail]', () => {
+  it("FindOne [GET /:id/thumbnail]", () => {
     return request(httpServer)
       .get(`/i/${image.stringId}/thumbnail`)
       .expect(HttpStatus.OK)
@@ -111,7 +93,7 @@ describe('[Feature] Images - /i', () => {
       });
   });
 
-  it('FindOneByDeleteKey [GET /delete/:key]', () => {
+  it("FindOneByDeleteKey [GET /delete/:key]", () => {
     return request(httpServer)
       .get(`/i/delete/${image.deleteKey}`)
       .expect(HttpStatus.OK)
@@ -120,12 +102,12 @@ describe('[Feature] Images - /i', () => {
       });
   });
 
-  it('Delete [GET /delete/:key/:pass]', () => {
+  it("Delete [GET /delete/:key/:pass]", () => {
     return request(httpServer)
       .get(`/i/delete/${image.deleteKey}/${image.deletePass}`)
       .expect(HttpStatus.OK)
       .then(({ text }) => {
-        expect(text).toBe('Deleted');
+        expect(text).toBe("Deleted");
       });
   });
 

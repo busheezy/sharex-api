@@ -1,2 +1,2 @@
-export const API_KEY_TYPE = 'apiKey';
-export const API_KEY_NAME = 'X-API-KEY';
+export const API_KEY_TYPE = "apiKey";
+export const API_KEY_NAME = "X-API-KEY";

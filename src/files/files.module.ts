@@ -1,10 +1,10 @@
-import { Module } from '@nestjs/common';
-import { FilesService } from './files.service';
-import { FilesController } from './files.controller';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { File } from './entities/file.entity';
-import { CommonModule } from '../common/common.module';
-import { MulterModule } from '@nestjs/platform-express';
+import { Module } from "@nestjs/common";
+import { FilesService } from "./files.service";
+import { FilesController } from "./files.controller";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { File } from "./entities/file.entity";
+import { CommonModule } from "../common/common.module";
+import { MulterModule } from "@nestjs/platform-express";
 
 @Module({
   imports: [
@@ -12,7 +12,7 @@ import { MulterModule } from '@nestjs/platform-express';
     CommonModule,
     MulterModule.registerAsync({
       useFactory: () => ({
-        dest: './uploads/files',
+        dest: "./uploads/files",
       }),
     }),
   ],

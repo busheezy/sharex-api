@@ -1,10 +1,10 @@
-import { Module } from '@nestjs/common';
-import { ImagesService } from './images.service';
-import { ImagesController } from './images.controller';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { Image } from './entities/image.entity';
-import { MulterModule } from '@nestjs/platform-express';
-import { CommonModule } from '../common/common.module';
+import { Module } from "@nestjs/common";
+import { ImagesService } from "./images.service";
+import { ImagesController } from "./images.controller";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { Image } from "./entities/image.entity";
+import { MulterModule } from "@nestjs/platform-express";
+import { CommonModule } from "../common/common.module";
 
 @Module({
   imports: [
@@ -12,7 +12,7 @@ import { CommonModule } from '../common/common.module';
     TypeOrmModule.forFeature([Image]),
     MulterModule.registerAsync({
       useFactory: () => ({
-        dest: './uploads/images',
+        dest: "./uploads/images",
       }),
     }),
   ],

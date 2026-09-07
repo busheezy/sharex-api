@@ -1,8 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { CommonService } from '../common/common.service';
-import { Link } from './entities/link.entity';
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { CommonService } from "../common/common.service";
+import { Link } from "./entities/link.entity";
 
 @Injectable()
 export class LinksService {

@@ -1,16 +1,31 @@
-version: '3'
 services:
   db-dev:
-    image: postgres
-    restart: always
+    image: postgres:17-alpine
+    restart: unless-stopped
     ports:
       - 127.0.0.1:5432:5432
     environment:
-      POSTGRES_PASSWORD: "${DB_PASSWORD}"
+      POSTGRES_PASSWORD: "${DB_PASSWORD:?Set DB_PASSWORD in .env}"
+    volumes:
+      - db-dev:/var/lib/postgresql/data
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
   db-test:
-    image: postgres
-    restart: always
+    image: postgres:17-alpine
     ports:
       - 127.0.0.1:5433:5432
     environment:
-      POSTGRES_PASSWORD: "testing!"
+      POSTGRES_PASSWORD: testing!
+    tmpfs:
+      - /var/lib/postgresql/data
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  db-dev:

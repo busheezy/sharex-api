@@ -1,11 +1,6 @@
-import {
-  ExecutionContext,
-  Injectable,
-  CanActivate,
-  Inject,
-} from '@nestjs/common';
-import { Request } from 'express';
-import { CommonConfigService } from '../common/common.config';
+import { ExecutionContext, Injectable, CanActivate, Inject } from "@nestjs/common";
+import { Request } from "express";
+import { CommonConfigService } from "../common/common.config";
 
 @Injectable()
 export class AuthenticatedGuard implements CanActivate {
@@ -19,6 +14,6 @@ export class AuthenticatedGuard implements CanActivate {
 
     const { apiKey } = this.commonConfigService;
 
-    return request.headers['x-api-key'] == apiKey;
+    return request.headers["x-api-key"] === apiKey;
   }
 }

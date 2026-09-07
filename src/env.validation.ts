@@ -1,6 +1,6 @@
-import { plainToInstance } from 'class-transformer';
-import { IsEnum, IsNumber, IsString, validateSync } from 'class-validator';
-import { Environment } from './app.types';
+import { plainToInstance } from "class-transformer";
+import { IsEnum, IsNumber, IsString, validateSync } from "class-validator";
+import { Environment } from "./app.types";
 
 class EnvironmentVariables {
   @IsEnum(Environment)

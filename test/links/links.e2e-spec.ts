@@ -1,30 +1,26 @@
-import {
-  INestApplication,
-  ValidationPipe,
-  HttpStatus,
-  HttpServer,
-} from '@nestjs/common';
-import { TestingModule, Test } from '@nestjs/testing';
-import { LinksModule } from '../../src/links/links.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import * as request from 'supertest';
-import { Link } from '../../src/links/entities/link.entity';
+import { Server } from "node:http";
+import { INestApplication, ValidationPipe, HttpStatus } from "@nestjs/common";
+import { TestingModule, Test } from "@nestjs/testing";
+import { LinksModule } from "../../src/links/links.module";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import request from "supertest";
+import { Link } from "../../src/links/entities/link.entity";
 
-describe('[Feature] Links - /l', () => {
+describe("[Feature] Links - /l", () => {
   let app: INestApplication;
-  let httpServer: HttpServer;
+  let httpServer: Server;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [
         LinksModule,
         TypeOrmModule.forRoot({
-          type: 'postgres',
-          host: 'localhost',
+          type: "postgres",
+          host: "localhost",
           port: 5433,
-          username: 'postgres',
-          password: 'testing!',
-          database: 'postgres',
+          username: "postgres",
+          password: "testing!",
+          database: "postgres",
           autoLoadEntities: true,
           synchronize: true,
         }),
@@ -47,11 +43,11 @@ describe('[Feature] Links - /l', () => {
   });
 
   let link: Link;
-  const linkSz = 'google.com';
+  const linkSz = "google.com";
 
-  it('Create [POST /]', () => {
+  it("Create [POST /]", () => {
     return request(httpServer)
-      .post('/l')
+      .post("/l")
       .send({
         url: linkSz,
       })
@@ -62,7 +58,7 @@ describe('[Feature] Links - /l', () => {
       });
   });
 
-  it('FindOne [GET /:id]', () => {
+  it("FindOne [GET /:id]", () => {
     return request(httpServer)
       .get(`/l/${link.stringId}`)
       .expect(HttpStatus.MOVED_PERMANENTLY)
@@ -71,7 +67,7 @@ describe('[Feature] Links - /l', () => {
       });
   });
 
-  it('FindOneByDeleteKey [GET /delete/:key]', () => {
+  it("FindOneByDeleteKey [GET /delete/:key]", () => {
     return request(httpServer)
       .get(`/l/delete/${link.deleteKey}`)
       .expect(HttpStatus.OK)
@@ -80,12 +76,12 @@ describe('[Feature] Links - /l', () => {
       });
   });
 
-  it('Delete [GET /delete/:key/:pass]', () => {
+  it("Delete [GET /delete/:key/:pass]", () => {
     return request(httpServer)
       .get(`/l/delete/${link.deleteKey}/${link.deletePass}`)
       .expect(HttpStatus.OK)
       .then(({ text }) => {
-        expect(text).toBe('Deleted');
+        expect(text).toBe("Deleted");
       });
   });
 

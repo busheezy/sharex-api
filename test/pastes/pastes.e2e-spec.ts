@@ -1,30 +1,26 @@
-import {
-  INestApplication,
-  ValidationPipe,
-  HttpStatus,
-  HttpServer,
-} from '@nestjs/common';
-import { TestingModule, Test } from '@nestjs/testing';
-import { PastesModule } from '../../src/pastes/pastes.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import * as request from 'supertest';
-import { Paste } from '../../src/pastes/entities/paste.entity';
+import { Server } from "node:http";
+import { INestApplication, ValidationPipe, HttpStatus } from "@nestjs/common";
+import { TestingModule, Test } from "@nestjs/testing";
+import { PastesModule } from "../../src/pastes/pastes.module";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import request from "supertest";
+import { Paste } from "../../src/pastes/entities/paste.entity";
 
-describe('[Feature] Pastes - /p', () => {
+describe("[Feature] Pastes - /p", () => {
   let app: INestApplication;
-  let httpServer: HttpServer;
+  let httpServer: Server;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [
         PastesModule,
         TypeOrmModule.forRoot({
-          type: 'postgres',
-          host: 'localhost',
+          type: "postgres",
+          host: "localhost",
           port: 5433,
-          username: 'postgres',
-          password: 'testing!',
-          database: 'postgres',
+          username: "postgres",
+          password: "testing!",
+          database: "postgres",
           autoLoadEntities: true,
           synchronize: true,
         }),
@@ -47,14 +43,14 @@ describe('[Feature] Pastes - /p', () => {
   });
 
   let paste: Paste;
-  const pasteSz = 'hello';
+  const pasteSz = "hello";
 
-  it('Create [POST /]', () => {
+  it("Create [POST /]", () => {
     return request(httpServer)
-      .post('/p')
-      .attach('paste', Buffer.from(pasteSz), {
-        filename: 'test.txt',
-        contentType: 'text/plain',
+      .post("/p")
+      .attach("paste", Buffer.from(pasteSz), {
+        filename: "test.txt",
+        contentType: "text/plain",
       })
       .expect(HttpStatus.CREATED)
       .then(({ body }) => {
@@ -63,7 +59,7 @@ describe('[Feature] Pastes - /p', () => {
       });
   });
 
-  it('FindOne [GET /:id]', () => {
+  it("FindOne [GET /:id]", () => {
     return request(httpServer)
       .get(`/p/${paste.stringId}`)
       .expect(HttpStatus.OK)
@@ -72,7 +68,7 @@ describe('[Feature] Pastes - /p', () => {
       });
   });
 
-  it('FindOneByDeleteKey [GET /delete/:key]', () => {
+  it("FindOneByDeleteKey [GET /delete/:key]", () => {
     return request(httpServer)
       .get(`/p/delete/${paste.deleteKey}`)
       .expect(HttpStatus.OK)
@@ -81,12 +77,12 @@ describe('[Feature] Pastes - /p', () => {
       });
   });
 
-  it('Delete [GET /delete/:key/:pass]', () => {
+  it("Delete [GET /delete/:key/:pass]", () => {
     return request(httpServer)
       .get(`/p/delete/${paste.deleteKey}/${paste.deletePass}`)
       .expect(HttpStatus.OK)
       .then(({ text }) => {
-        expect(text).toBe('Deleted');
+        expect(text).toBe("Deleted");
       });
   });
 

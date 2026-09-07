@@ -3,6 +3,7 @@ import {
   Post,
   UseInterceptors,
   UploadedFile,
+  ParseFilePipe,
   Param,
   Response,
   Request,
@@ -10,96 +11,55 @@ import {
   StreamableFile,
   NotFoundException,
   ForbiddenException,
-} from '@nestjs/common';
-import { ImagesService } from './images.service';
-import { CreateImageDto } from './dto/create-image.dto';
-import {
-  ApiBody,
-  ApiConsumes,
-  ApiOkResponse,
-  ApiProduces,
-  ApiTags,
-} from '@nestjs/swagger';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { Auth } from '../auth/auth.decorator';
+} from "@nestjs/common";
+import { ImagesService } from "./images.service";
+import { CreateImageDto } from "./dto/create-image.dto";
+import { ApiBody, ApiConsumes, ApiOkResponse, ApiProduces, ApiTags } from "@nestjs/swagger";
+import { FileInterceptor } from "@nestjs/platform-express";
+import { Auth } from "../auth/auth.decorator";
 
-@Controller('i')
-@ApiTags('images')
+@Controller("i")
+@ApiTags("images")
 export class ImagesController {
   constructor(private readonly imagesService: ImagesService) {}
 
-  @Get(':id*')
+  @Get(":id/thumbnail")
   @ApiOkResponse({
-    description: 'We are returning the image.',
+    description: "We are returning the image thumbnail.",
     schema: {
-      type: 'string',
-      format: 'binary',
+      type: "string",
+      format: "binary",
     },
   })
-  @ApiProduces('image/*')
-  async findOne(
-    @Param('id') stringId: string,
-    @Response({ passthrough: true }) res,
-    @Request() req,
-  ): Promise<StreamableFile> {
-    const image = await this.imagesService.findOne(stringId);
-
-    if (!image) {
-      throw new NotFoundException();
-    }
-
-    const path = req.path;
-
-    const isBasePath = new RegExp(`^/i/${stringId}/?$`).test(path);
-
-    if (isBasePath) {
-      return res.redirect(`/i/${stringId}/${image.originalFileName}`);
-    }
-
-    res.set({
-      'Content-Type': image.fileType,
-    });
-
-    return this.imagesService.streamImage(image);
-  }
-
-  @Get(':id/thumbnail')
-  @ApiOkResponse({
-    description: 'We are returning the image thumbnail.',
-    schema: {
-      type: 'string',
-      format: 'binary',
-    },
-  })
-  @ApiProduces('image/*')
+  @ApiProduces("image/*")
   async findOneThumbnail(
-    @Param('id') stringId: string,
+    @Param("id") stringId: string,
     @Response({ passthrough: true }) res,
   ): Promise<StreamableFile> {
     const image = await this.imagesService.findOne(stringId);
 
     res.set({
-      'Content-Type': image.fileType,
+      "Content-Type": image.fileType,
     });
 
     return this.imagesService.streamImageThumbnail(image);
   }
 
   @Post()
-  @ApiConsumes('multipart/form-data')
+  @ApiConsumes("multipart/form-data")
   @ApiBody({
-    description: 'Image file upload.',
+    description: "Image file upload.",
     type: CreateImageDto,
   })
-  @UseInterceptors(FileInterceptor('image'))
+  @UseInterceptors(FileInterceptor("image"))
   @Auth()
-  async create(@UploadedFile() file: Express.Multer.File) {
+  async create(@UploadedFile(new ParseFilePipe()) file: Express.Multer.File) {
     await this.imagesService.generateThumbnail(file);
     return this.imagesService.create(file);
   }
 
-  @Get('delete/:key')
-  async deleteCode(@Param('key') key: string) {
+  @Get("delete/:key")
+  async deleteCode(@Param("key") key: string) {
     const image = await this.imagesService.findOneByDeleteKey(key);
 
     if (!image) {
@@ -111,8 +71,8 @@ export class ImagesController {
     return deletePass;
   }
 
-  @Get('delete/:key/:pass')
-  async delete(@Param('key') key: string, @Param('pass') pass: string) {
+  @Get("delete/:key/:pass")
+  async delete(@Param("key") key: string, @Param("pass") pass: string) {
     const image = await this.imagesService.findOneByDeleteKey(key);
 
     if (!image) {
@@ -128,6 +88,42 @@ export class ImagesController {
     await this.imagesService.deleteImages(image);
     await this.imagesService.delete(key);
 
-    return 'Deleted';
+    return "Deleted";
+  }
+  @Get([":id", ":id/:fileName"])
+  @ApiOkResponse({
+    description: "We are returning the image.",
+    schema: {
+      type: "string",
+      format: "binary",
+    },
+  })
+  @ApiProduces("image/*")
+  async findOne(
+    @Param("id") stringId: string,
+    @Response({ passthrough: true }) res,
+    @Request() req?: { path: string },
+  ): Promise<StreamableFile> {
+    const image = await this.imagesService.findOne(stringId);
+
+    if (!image) {
+      throw new NotFoundException();
+    }
+
+    const path = req?.path;
+
+    const isBasePath = path === `/i/${stringId}` || path === `/i/${stringId}/`;
+
+    if (isBasePath) {
+      const fileName = encodeURIComponent(image.originalFileName);
+      return res.redirect(`/i/${stringId}/${fileName}`);
+    }
+
+    const contentType = image.fileType;
+    res.set({
+      "Content-Type": contentType,
+    });
+
+    return this.imagesService.streamImage(image);
   }
 }

@@ -1,3 +1,2 @@
-onlyBuiltDependencies:
-  - '@nestjs/core'
-  - sharp
+onlyBuiltDependencies: ["@nestjs/core", "@parcel/watcher", "sharp", "unrs-resolver"]
+ignoredBuiltDependencies: ["@scarf/scarf"]

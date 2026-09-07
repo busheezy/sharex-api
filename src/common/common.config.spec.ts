@@ -1,9 +1,9 @@
-import { ConfigService } from '@nestjs/config';
-import { Test, TestingModule } from '@nestjs/testing';
-import { Environment } from '../app.types';
-import { CommonConfigService } from './common.config';
+import { ConfigService } from "@nestjs/config";
+import { Test, TestingModule } from "@nestjs/testing";
+import { Environment } from "../app.types";
+import { CommonConfigService } from "./common.config";
 
-describe('CommonConfigService', () => {
+describe("CommonConfigService", () => {
   let service: CommonConfigService;
 
   beforeEach(async () => {
@@ -14,16 +14,16 @@ describe('CommonConfigService', () => {
           provide: ConfigService,
           useValue: {
             get: jest.fn((key: string) => {
-              if (key === 'NODE_ENV') {
+              if (key === "NODE_ENV") {
                 return Environment.Test;
               }
 
-              if (key === 'API_KEY') {
-                return 'bird';
+              if (key === "API_KEY") {
+                return "bird";
               }
 
-              if (key === 'FRONT_API_URL') {
-                return 'localhost';
+              if (key === "FRONT_API_URL") {
+                return "localhost";
               }
 
               return null;
@@ -36,37 +36,37 @@ describe('CommonConfigService', () => {
     service = module.get<CommonConfigService>(CommonConfigService);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 
-  describe('env', () => {
-    it('should be test', () => {
+  describe("env", () => {
+    it("should be test", () => {
       expect(service.env).toBe(Environment.Test);
     });
 
-    it('should not be production', () => {
+    it("should not be production", () => {
       expect(service.env).not.toBe(Environment.Production);
     });
   });
 
-  describe('apiKey', () => {
-    it('should be bird', () => {
-      expect(service.apiKey).toBe('bird');
+  describe("apiKey", () => {
+    it("should be bird", () => {
+      expect(service.apiKey).toBe("bird");
     });
 
-    it('should not be cat', () => {
-      expect(service.apiKey).not.toBe('cat');
+    it("should not be cat", () => {
+      expect(service.apiKey).not.toBe("cat");
     });
   });
 
-  describe('frontApiUrl', () => {
-    it('should be localhost', () => {
-      expect(service.frontApiUrl).toBe('localhost');
+  describe("frontApiUrl", () => {
+    it("should be localhost", () => {
+      expect(service.frontApiUrl).toBe("localhost");
     });
 
-    it('should not be google', () => {
-      expect(service.frontApiUrl).not.toBe('google.com');
+    it("should not be google", () => {
+      expect(service.frontApiUrl).not.toBe("google.com");
     });
   });
 });

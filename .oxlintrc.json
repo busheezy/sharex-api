@@ -1,0 +1,29 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "unicorn", "oxc"],
+  "categories": {
+    "correctness": "error"
+  },
+  "env": {
+    "browser": false,
+    "node": true
+  },
+  "rules": {
+    "curly": ["error", "all"],
+    "max-depth": ["error", 3],
+    "complexity": ["error", 10],
+    "no-nested-ternary": "error",
+    "no-else-return": "error",
+    "eqeqeq": ["error", "always"]
+  },
+  "ignorePatterns": [
+    "dist/**",
+    "out/**",
+    "coverage/**",
+    ".vscode-test/**",
+    "pnpm-lock.yaml",
+    "uploads/**",
+    "thumbnails/**",
+    "output/**"
+  ]
+}

@@ -1,18 +1,13 @@
-import {
-  Injectable,
-  NotFoundException,
-  OnModuleInit,
-  StreamableFile,
-} from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { CommonService } from '../common/common.service';
-import { Image } from './entities/image.entity';
-import * as sharp from 'sharp';
-import { join } from 'node:path';
-import { unlink } from 'node:fs/promises';
-import { createReadStream } from 'node:fs';
-import { ensureDir } from 'fs-extra';
+import { Injectable, NotFoundException, OnModuleInit, StreamableFile } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { CommonService } from "../common/common.service";
+import { Image } from "./entities/image.entity";
+import sharp from "sharp";
+import { join } from "node:path";
+import { unlink } from "node:fs/promises";
+import { createReadStream } from "node:fs";
+import { ensureDir } from "fs-extra";
 
 @Injectable()
 export class ImagesService implements OnModuleInit {
@@ -28,7 +23,7 @@ export class ImagesService implements OnModuleInit {
   }
 
   async createDirs() {
-    const thumbnailImagesPath = join(process.cwd(), 'thumbnails', 'images');
+    const thumbnailImagesPath = join(process.cwd(), "thumbnails", "images");
 
     await ensureDir(thumbnailImagesPath);
   }
@@ -64,12 +59,7 @@ export class ImagesService implements OnModuleInit {
   }
 
   async generateThumbnail(file: Express.Multer.File): Promise<void> {
-    const thumbnailPath = join(
-      process.cwd(),
-      'thumbnails',
-      'images',
-      file.filename,
-    );
+    const thumbnailPath = join(process.cwd(), "thumbnails", "images", file.filename);
 
     await sharp(file.path).resize(128).toFile(thumbnailPath);
   }
@@ -99,33 +89,24 @@ export class ImagesService implements OnModuleInit {
   }
 
   async deleteImages(image: Image) {
-    const imagePath = join(process.cwd(), 'uploads', 'images', image.fileName);
+    const imagePath = join(process.cwd(), "uploads", "images", image.fileName);
 
     await unlink(imagePath);
 
-    const thumbnailPath = join(
-      process.cwd(),
-      'thumbnails',
-      'images',
-      image.fileName,
-    );
+    const thumbnailPath = join(process.cwd(), "thumbnails", "images", image.fileName);
 
     await unlink(thumbnailPath);
   }
 
   streamImage(image: Image): StreamableFile {
     return new StreamableFile(
-      createReadStream(
-        join(process.cwd(), 'uploads', 'images', image.fileName),
-      ),
+      createReadStream(join(process.cwd(), "uploads", "images", image.fileName)),
     );
   }
 
   streamImageThumbnail(image: Image): StreamableFile {
     return new StreamableFile(
-      createReadStream(
-        join(process.cwd(), 'thumbnails', 'images', image.fileName),
-      ),
+      createReadStream(join(process.cwd(), "thumbnails", "images", image.fileName)),
     );
   }
 }

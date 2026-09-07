@@ -1,7 +1,7 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { CommonService } from './common.service';
+import { Test, TestingModule } from "@nestjs/testing";
+import { CommonService } from "./common.service";
 
-describe('CommonService', () => {
+describe("CommonService", () => {
   let service: CommonService;
 
   beforeEach(async () => {
@@ -12,13 +12,13 @@ describe('CommonService', () => {
     service = module.get<CommonService>(CommonService);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 
-  describe('randomString', () => {
-    describe('when getting a random string', () => {
-      it('should return a string', async () => {
+  describe("randomString", () => {
+    describe("when getting a random string", () => {
+      it("should return a string", async () => {
         const randomString = service.randomString();
         const randomString2 = service.randomString();
 

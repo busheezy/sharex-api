@@ -1,0 +1,13 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "ignorePatterns": [
+    "dist/**",
+    "out/**",
+    "coverage/**",
+    ".vscode-test/**",
+    "pnpm-lock.yaml",
+    "uploads/**",
+    "thumbnails/**",
+    "output/**"
+  ]
+}

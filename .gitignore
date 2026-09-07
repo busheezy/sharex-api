@@ -38,3 +38,5 @@ lerna-debug.log*
 
 uploads
 thumbnails
+*.tsbuildinfo
+!.vscode/settings.json

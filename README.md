@@ -1,153 +1,71 @@
-<a name="readme-top"></a>
+# ShareX API
 
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-[![Codacy coverage][codacy]][codacy-url]
-[![MIT License][license-shield]][license-url]
-[![LinkedIn][linkedin-shield]][linkedin-url]
+Self-hosted uploads for images, files, text, and short links. Built with NestJS and PostgreSQL, with OpenAPI documentation at `/docs` and the schema at `/docs-json`.
 
-<br />
-<div align="center">
-<h3 align="center">ShareX API</h3>
+## Development
 
-  <p align="center">
-    This is a Node.js API for ShareX with Docker support. This is ideal if you want to use ShareX with your own server and domain. The API is fully documented with OpenAPI.
-    <br />
-    <br />
-    <a href="https://github.com/BuSheeZy/sharex-api/issues">Report Bug</a>
-    ·
-    <a href="https://github.com/BuSheeZy/sharex-api/issues">Request Feature</a>
-  </p>
-</div>
+Use Node.js 24.19 or newer within the 24.x release line and pnpm 10.34.5. The versions are pinned in `.nvmrc` and `package.json`.
 
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li>
-      <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
-    </li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
-      </ul>
-    </li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
-  </ol>
-</details>
+```sh
+nvm use
+npm install --global pnpm@10.34.5
+pnpm install --frozen-lockfile
+cp .env.example .env
+docker compose up -d --wait db-dev
+pnpm start:dev
+```
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+Edit `.env` with your API key and database password before starting. The API listens on port 3000. `DB_HOST=localhost` is for local development; use your database service name when running in Docker.
 
-### Built With
+## Uploads
 
-[![Nest][Nest.js]][Nest-url]
+Send `X-API-Key` with each upload. Successful uploads retain their existing JSON response, including `stringId`, `deleteKey`, and `deletePass`.
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+| Content | Upload    | Multipart field                         | Retrieve     |
+| ------- | --------- | --------------------------------------- | ------------ |
+| Image   | `POST /i` | `image`                                 | `GET /i/:id` |
+| File    | `POST /f` | `file`                                  | `GET /f/:id` |
+| Text    | `POST /p` | `paste`                                 | `GET /p/:id` |
+| Link    | `POST /l` | JSON `{ "url": "https://example.com" }` | `GET /l/:id` |
 
-## Getting Started
+Image URLs redirect to `/i/:id/:filename`. Thumbnails are available at `/i/:id/thumbnail`. Existing deletion URLs are preserved; keep deletion keys private.
 
-### Prerequisites
+Use the [installer](https://github.com/busheezy/sharex-api-installer) to generate ShareX uploader profiles and Docker Compose configuration. The [paste frontend](https://github.com/busheezy/sharex-paste-front) displays text, and the [VS Code extension](https://github.com/busheezy/vscode-sharex-api-uploader) uploads editor documents.
 
-This can be ran with docker or node.js directly.
+## Checks
 
-### Installation
+```sh
+pnpm check
+pnpm build
+pnpm test --runInBand
+pnpm test:cov --runInBand
+pnpm test:e2e
+```
 
-It is suggested to use the ShareX API installer docker image. This will generate all of the required configs and docker-compose files needed for the optimal experience. You can find that [here](https://github.com/busheezy/sharex-api-installer).
+`pnpm check` runs Oxlint, Oxfmt verification, and TypeScript. Use `pnpm lint:fix` for lint fixes and `pnpm format` to format supported files. Install the workspace's recommended VS Code extensions for the same tools on save.
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+`pnpm test:e2e` starts a disposable PostgreSQL service on localhost:5433. If a failed run leaves it running, use `docker compose down db-test`. CI supplies its own database and runs `pnpm test:e2e:ci`. It also builds the container and uploads coverage without requiring secrets.
 
-## Usage
+## Containers and upgrades
 
-I suggest starting the API with docker-compose. You can find an example [here](https://github.com/busheezy/sharex-api/blob/main/docker-compose.yaml).
+```sh
+docker build -t sharex-api:local .
+```
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+The runtime executes `dist/main.js`. Persist `/app/uploads` and `/app/thumbnails`; the installer now uses these paths too. Existing files stored inside an older container must be copied into the host-mounted upload directories before replacing it.
 
-## Roadmap
+The application keeps NestJS 11 and TypeORM 0.3 to preserve its CommonJS runtime and database API. All Nest packages use matching majors. Development mode still synchronizes the schema; production mode does not. Back up the database and uploads before an upgrade, and apply schema changes deliberately for production.
 
--   [x] 100% Coverage
-    -   [ ] Better test descriptions
-
--   [x] e2e Testing
-
-See the [open issues](https://github.com/BuSheeZy/sharex-api/issues) for a full list of proposed features (and known issues).
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+The development Compose file uses PostgreSQL 17. Do not attach an older PostgreSQL data directory to a new major version: keep your existing image version or perform a PostgreSQL migration first.
 
 ## Contributing
 
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+Follow the project's coding standards and Oxc configuration. Linting enforces braces, a maximum nesting depth of 3, a complexity limit of 10, and no nested ternaries. Do not add tests or code comments unless requested. CI checks every pull request; Dependabot checks dependency and action updates weekly.
 
-If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
-Don't forget to give the project a star! Thanks again!
+## License and credits
 
-1.  Fork the Project
-2.  Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3.  Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4.  Push to the Branch (`git push origin feature/AmazingFeature`)
-5.  Open a Pull Request
+MIT; see [LICENSE.txt](LICENSE.txt). Created by Ryan Bucshon. Thanks to [Sikari](https://github.com/Sikarii) for feedback.
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+## Image publishing
 
-## License
-
-Distributed under the MIT License. See `LICENSE.txt` for more information.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-## Contact
-
-Ryan Bucshon - [@BuSheeZy_Dev](https://twitter.com/BuSheeZy_Dev) - BuSheeZy@gmail.com
-
-Project Link: <https://github.com/BuSheeZy/sharex-api>
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-## Acknowledgments
-
--   [Sikari](https://github.com/Sikarii)
-    -   Thanks to Sikari for great feedback.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-[contributors-shield]: https://img.shields.io/github/contributors/BuSheeZy/sharex-api.svg?style=for-the-badge
-
-[contributors-url]: https://github.com/BuSheeZy/sharex-api/graphs/contributors
-
-[forks-shield]: https://img.shields.io/github/forks/BuSheeZy/sharex-api.svg?style=for-the-badge
-
-[forks-url]: https://github.com/BuSheeZy/sharex-api/network/members
-
-[stars-shield]: https://img.shields.io/github/stars/BuSheeZy/sharex-api.svg?style=for-the-badge
-
-[stars-url]: https://github.com/BuSheeZy/sharex-api/stargazers
-
-[issues-shield]: https://img.shields.io/github/issues/BuSheeZy/sharex-api.svg?style=for-the-badge
-
-[issues-url]: https://github.com/BuSheeZy/sharex-api/issues
-
-[license-shield]: https://img.shields.io/github/license/BuSheeZy/sharex-api.svg?style=for-the-badge
-
-[license-url]: https://github.com/BuSheeZy/sharex-api/blob/master/LICENSE.txt
-
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-
-[linkedin-url]: https://linkedin.com/in/ryan-bucshon
-
-[nest.js]: https://img.shields.io/badge/nestjs-000000?style=for-the-badge&logo=nestjs&logoColor=white
-
-[nest-url]: https://nestjs.com/
-
-[codacy]: https://img.shields.io/codacy/coverage/405bde669e1c4330a68293c301d41a6e?style=for-the-badge
-
-[codacy-url]: https://app.codacy.com/gh/busheezy/sharex-api/dashboard
+CI publishes `ghcr.io/busheezy/sharex-api:latest` and `sha-<commit>` tags after checks pass on `main`. Images support Linux amd64 and arm64. Pull requests build images without publishing them. Publishing uses the repository’s GitHub token; Docker Hub credentials are not required.

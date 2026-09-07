@@ -1,11 +1,11 @@
-import { Injectable, NotFoundException, StreamableFile } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { CommonService } from '../common/common.service';
-import { File } from './entities/file.entity';
-import { unlink } from 'node:fs/promises';
-import { join } from 'node:path';
-import { createReadStream } from 'node:fs';
+import { Injectable, NotFoundException, StreamableFile } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { CommonService } from "../common/common.service";
+import { File } from "./entities/file.entity";
+import { unlink } from "node:fs/promises";
+import { join } from "node:path";
+import { createReadStream } from "node:fs";
 
 @Injectable()
 export class FilesService {
@@ -70,13 +70,13 @@ export class FilesService {
   }
 
   async deleteFile(file: File) {
-    const path = join(process.cwd(), 'uploads', 'files', file.fileName);
+    const path = join(process.cwd(), "uploads", "files", file.fileName);
     await unlink(path);
   }
 
   streamFile(file: File): StreamableFile {
     return new StreamableFile(
-      createReadStream(join(process.cwd(), 'uploads', 'files', file.fileName)),
+      createReadStream(join(process.cwd(), "uploads", "files", file.fileName)),
     );
   }
 }

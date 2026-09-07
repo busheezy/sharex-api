@@ -1,20 +1,20 @@
-import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { Environment } from '../app.types';
+import { Injectable } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import { Environment } from "../app.types";
 
 @Injectable()
 export class CommonConfigService {
   constructor(private readonly configService: ConfigService) {}
 
   get env(): Environment {
-    return this.configService.get('NODE_ENV');
+    return this.configService.get("NODE_ENV");
   }
 
   get apiKey(): string {
-    return this.configService.get('API_KEY');
+    return this.configService.get("API_KEY");
   }
 
   get frontApiUrl(): string {
-    return this.configService.get('FRONT_API_URL');
+    return this.configService.get("FRONT_API_URL");
   }
 }
