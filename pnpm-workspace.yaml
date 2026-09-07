@@ -1,2 +1,8 @@
-onlyBuiltDependencies: ["@nestjs/core", "@parcel/watcher", "sharp", "unrs-resolver"]
-ignoredBuiltDependencies: ["@scarf/scarf"]
+allowBuilds:
+  {
+    "@nestjs/core": true,
+    "@parcel/watcher": true,
+    "sharp": true,
+    "unrs-resolver": true,
+    "@scarf/scarf": false,
+  }

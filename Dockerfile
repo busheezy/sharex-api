@@ -1,6 +1,6 @@
 FROM node:24.19.0-bookworm-slim AS base
 WORKDIR /app
-RUN npm install --global pnpm@10.34.5
+RUN npm install --global pnpm@12.3.4
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
 
 FROM base AS prod-deps

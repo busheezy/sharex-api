@@ -4,11 +4,11 @@ Self-hosted uploads for images, files, text, and short links. Built with NestJS 
 
 ## Development
 
-Use Node.js 24.19 or newer within the 24.x release line and pnpm 10.34.5. The versions are pinned in `.nvmrc` and `package.json`.
+Use Node.js 24.19 or newer within the 24.x release line and pnpm 12.3.4. The versions are pinned in `.nvmrc` and `package.json`.
 
 ```sh
 nvm use
-npm install --global pnpm@10.34.5
+npm install --global pnpm@12.3.4
 pnpm install --frozen-lockfile
 cp .env.example .env
 docker compose up -d --wait db-dev
@@ -54,7 +54,7 @@ docker build -t sharex-api:local .
 
 The runtime executes `dist/main.js`. Persist `/app/uploads` and `/app/thumbnails`; the installer now uses these paths too. Existing files stored inside an older container must be copied into the host-mounted upload directories before replacing it.
 
-The application keeps NestJS 11 and TypeORM 0.3 to preserve its CommonJS runtime and database API. All Nest packages use matching majors. Development mode still synchronizes the schema; production mode does not. Back up the database and uploads before an upgrade, and apply schema changes deliberately for production.
+The application uses NestJS 12 and TypeORM 1.1 with the existing CommonJS runtime. TypeScript stays on 6.0.3 because Nest CLI and ts-jest require the compiler API that TypeScript 7 does not provide. Jest scripts enable Node VM modules to load ESM dependencies. All Nest packages use matching majors. Development mode still synchronizes the schema; production mode does not. Back up the database and uploads before an upgrade, and apply schema changes deliberately for production.
 
 The development Compose file uses PostgreSQL 17. Do not attach an older PostgreSQL data directory to a new major version: keep your existing image version or perform a PostgreSQL migration first.
 
