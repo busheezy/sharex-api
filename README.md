@@ -1,5 +1,6 @@
 # ShareX API
 
+[![Codacy grade](https://img.shields.io/codacy/grade/405bde669e1c4330a68293c301d41a6e?style=for-the-badge)](https://app.codacy.com/gh/busheezy/sharex-api/dashboard)
 [![Codacy coverage](https://img.shields.io/codacy/coverage/405bde669e1c4330a68293c301d41a6e?style=for-the-badge)](https://app.codacy.com/gh/busheezy/sharex-api/dashboard)
 
 Self-hosted uploads for images, files, text, and short links. Built with NestJS and PostgreSQL, with OpenAPI documentation at `/docs` and the schema at `/docs-json`.
