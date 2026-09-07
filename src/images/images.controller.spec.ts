@@ -42,6 +42,46 @@ describe("ImagesController", () => {
   });
 
   describe("findOne", () => {
+    it.each(["/i/abcdef", "/i/abcdef/"])(
+      "redirects %s to the encoded original filename",
+      async (path) => {
+        const image = new Image();
+        image.originalFileName = "Screenshot #1?.png";
+
+        const redirect = jest.fn();
+        const response = { redirect };
+        const request = { path };
+        const findImage = jest.spyOn(service, "findOne").mockResolvedValue(image);
+        const streamImage = jest.spyOn(service, "streamImage");
+
+        await controller.findOne("abcdef", response, request);
+
+        expect(findImage).toHaveBeenCalledWith("abcdef");
+        expect(redirect).toHaveBeenCalledWith("/i/abcdef/Screenshot%20%231%3F.png");
+        expect(streamImage).not.toHaveBeenCalled();
+      },
+    );
+
+    it("streams the named image URL without redirecting again", async () => {
+      const image = new Image();
+      image.fileType = "image/png";
+      const bytes = Buffer.from("image contents");
+      const file = new StreamableFile(bytes);
+      const set = jest.fn();
+      const redirect = jest.fn();
+      const response = { set, redirect };
+      const request = { path: "/i/abcdef/Screenshot%20%231%3F.png" };
+      jest.spyOn(service, "findOne").mockResolvedValue(image);
+      const streamImage = jest.spyOn(service, "streamImage").mockReturnValue(file);
+
+      const result = await controller.findOne("abcdef", response, request);
+
+      expect(result).toBe(file);
+      expect(set).toHaveBeenCalledWith({ "Content-Type": "image/png" });
+      expect(streamImage).toHaveBeenCalledWith(image);
+      expect(redirect).not.toHaveBeenCalled();
+    });
+
     it("should return a image", async () => {
       const mockImage = new Image();
       mockImage.deleteKey = "abcdef";

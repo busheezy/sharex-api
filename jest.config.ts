@@ -9,6 +9,13 @@ const config: Config.InitialOptions = {
   },
   collectCoverageFrom: ["**/*.(t|j)s"],
   coverageDirectory: "../coverage",
+  coverageThreshold: {
+    global: {
+      statements: 100,
+      functions: 100,
+      lines: 100,
+    },
+  },
   testEnvironment: "node",
   verbose: true,
   coveragePathIgnorePatterns: [".module.ts", ".types.ts", "main.ts"],
