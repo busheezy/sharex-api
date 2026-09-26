@@ -8,6 +8,8 @@ import { File } from "./entities/file.entity";
 import { FilesController } from "./files.controller";
 import { FilesService } from "./files.service";
 import { Readable } from "node:stream";
+import { join } from "node:path";
+import type { Request, Response } from "express";
 
 const mockRes = {
   set: jest.fn(),
@@ -39,6 +41,113 @@ describe("FilesController", () => {
   it("should be defined", () => {
     expect(controller).toBeDefined();
     expect(service).toBeDefined();
+  });
+
+  describe("watch", () => {
+    it.each([
+      ["https", "http", "https"],
+      [undefined, "http", "http"],
+    ])(
+      "renders the player with forwarded protocol %s",
+      async (forwardedProtocol, protocol, expectedProtocol) => {
+        const file = new File();
+        file.fileType = "video/mp4";
+        file.originalFileName = "clip & <script>\"'.mp4";
+        file.deleteKey = "private-delete-key";
+        file.deletePass = "private-delete-pass";
+        jest.spyOn(service, "findOne").mockResolvedValue(file);
+        const get = jest.fn().mockImplementation((name: string) => {
+          if (name === "host") {
+            return "videos.example";
+          }
+
+          return forwardedProtocol;
+        });
+        const req = {
+          get,
+          protocol,
+          originalUrl: "/f/abcdef/watch?tracking=secret",
+        } as unknown as Request;
+        const set = jest.fn();
+        const res = { set } as unknown as Response;
+        const html = await controller.watch("abcdef", req, res);
+        const baseUrl = `${expectedProtocol}://videos.example/f/abcdef`;
+
+        expect(service.findOne).toHaveBeenCalledWith("abcdef");
+        expect(set).toHaveBeenCalledWith({ "Content-Type": "text/html; charset=utf-8" });
+        expect(html).toContain('<video controls playsinline preload="metadata"');
+        expect(html).toContain(`<meta property="og:url" content="${baseUrl}/watch">`);
+        expect(html).toContain(`<meta property="og:video" content="${baseUrl}/video">`);
+        expect(html).toContain('<meta property="og:video:type" content="video/mp4">');
+        expect(html).toContain(`<source src="${baseUrl}/video" type="video/mp4">`);
+        expect(html).toContain(`<a href="${baseUrl}">Download video</a>`);
+        expect(html).toContain("clip &amp; &lt;script&gt;&quot;&#39;.mp4");
+        expect(html).not.toContain("<script>");
+        expect(html).not.toContain("tracking=secret");
+        expect(html).not.toContain(file.deleteKey);
+        expect(html).not.toContain(file.deletePass);
+      },
+    );
+
+    it("rejects non-video files without rendering a page", async () => {
+      const file = new File();
+      file.fileType = "text/plain";
+      jest.spyOn(service, "findOne").mockResolvedValue(file);
+      const req = {} as Request;
+      const set = jest.fn();
+      const res = { set } as unknown as Response;
+      const result = controller.watch("abcdef", req, res);
+
+      await expect(result).rejects.toThrow("Video not found");
+      expect(set).not.toHaveBeenCalled();
+    });
+
+    it("returns not found for an unknown video", async () => {
+      const error = new NotFoundException();
+      jest.spyOn(service, "findOne").mockRejectedValue(error);
+      const req = {} as Request;
+      const res = {} as Response;
+      const result = controller.watch("missing", req, res);
+
+      await expect(result).rejects.toBe(error);
+    });
+  });
+
+  describe("video", () => {
+    it("serves the stored video inline with byte ranges enabled", async () => {
+      const file = new File();
+      file.fileType = "video/webm";
+      file.fileName = "stored-video";
+      jest.spyOn(service, "findOne").mockResolvedValue(file);
+      const sendFile = jest.fn();
+      const res = { sendFile } as unknown as Response;
+      const root = join(process.cwd(), "uploads", "files");
+
+      await controller.video("abcdef", res);
+
+      expect(service.findOne).toHaveBeenCalledWith("abcdef");
+      expect(sendFile).toHaveBeenCalledWith("stored-video", {
+        root,
+        headers: {
+          "Content-Type": "video/webm",
+          "Content-Disposition": "inline",
+          "X-Content-Type-Options": "nosniff",
+        },
+        acceptRanges: true,
+      });
+    });
+
+    it("rejects non-video files without sending them inline", async () => {
+      const file = new File();
+      file.fileType = "text/html";
+      jest.spyOn(service, "findOne").mockResolvedValue(file);
+      const sendFile = jest.fn();
+      const res = { sendFile } as unknown as Response;
+      const result = controller.video("abcdef", res);
+
+      await expect(result).rejects.toBeInstanceOf(NotFoundException);
+      expect(sendFile).not.toHaveBeenCalled();
+    });
   });
 
   describe("findOne", () => {
