@@ -63,6 +63,16 @@ export class FilesController {
     res.sendFile(file.fileName, options);
   }
 
+  @Get(":id/thumbnail")
+  @ApiOkResponse({ description: "A cached video preview image with a play symbol." })
+  async thumbnail(@Param("id") stringId: string): Promise<StreamableFile> {
+    const file = await this.findVideo(stringId);
+    const thumbnail = await this.filesService.videoThumbnail(file);
+    const options = { type: "image/jpeg", disposition: "inline" };
+
+    return new StreamableFile(thumbnail, options);
+  }
+
   private async findVideo(stringId: string) {
     const file = await this.filesService.findOne(stringId);
     const isVideo = file.fileType.startsWith("video/");

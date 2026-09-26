@@ -13,6 +13,7 @@ RUN pnpm build
 
 FROM node:26.8.1-bookworm-slim
 WORKDIR /app
+RUN apt-get update && apt-get install -y --no-install-recommends ffmpeg && rm -rf /var/lib/apt/lists/*
 COPY --from=prod-deps /app/node_modules ./node_modules
 COPY --from=build /app/dist ./dist
 VOLUME ["/app/uploads", "/app/thumbnails"]

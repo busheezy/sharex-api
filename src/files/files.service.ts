@@ -3,9 +3,11 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { CommonService } from "../common/common.service";
 import { File } from "./entities/file.entity";
-import { unlink } from "node:fs/promises";
+import { mkdir, readFile, rename, rm, unlink, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { createReadStream } from "node:fs";
+import { randomUUID } from "node:crypto";
+import { renderVideoThumbnail } from "./video-thumbnail";
 
 @Injectable()
 export class FilesService {
@@ -72,6 +74,40 @@ export class FilesService {
   async deleteFile(file: File) {
     const path = join(process.cwd(), "uploads", "files", file.fileName);
     await unlink(path);
+
+    const thumbnailPath = join(process.cwd(), "thumbnails", "files", `${file.fileName}.jpg`);
+    await rm(thumbnailPath, { force: true });
+  }
+
+  async videoThumbnail(file: File): Promise<Buffer> {
+    const directory = join(process.cwd(), "thumbnails", "files");
+    const thumbnailPath = join(directory, `${file.fileName}.jpg`);
+
+    try {
+      const thumbnail = await readFile(thumbnailPath);
+      return thumbnail;
+    } catch (error) {
+      const code = (error as NodeJS.ErrnoException).code;
+
+      if (code !== "ENOENT") {
+        throw error;
+      }
+    }
+
+    const videoPath = join(process.cwd(), "uploads", "files", file.fileName);
+    const thumbnail = await renderVideoThumbnail(videoPath);
+    await mkdir(directory, { recursive: true });
+    const temporaryId = randomUUID();
+    const temporaryPath = `${thumbnailPath}.${temporaryId}.tmp`;
+
+    try {
+      await writeFile(temporaryPath, thumbnail);
+      await rename(temporaryPath, thumbnailPath);
+    } finally {
+      await rm(temporaryPath, { force: true });
+    }
+
+    return thumbnail;
   }
 
   streamFile(file: File): StreamableFile {

@@ -14,10 +14,13 @@ export function renderVideoPlayer(file: File, pageUrl: URL): string {
   videoUrl.pathname = pageUrl.pathname.replace(/\/watch$/, "/video");
   const downloadUrl = new URL(pageUrl);
   downloadUrl.pathname = pageUrl.pathname.replace(/\/watch$/, "");
+  const thumbnailUrl = new URL(pageUrl);
+  thumbnailUrl.pathname = pageUrl.pathname.replace(/\/watch$/, "/thumbnail");
   const title = escapeHtml(file.originalFileName);
   const canonicalUrl = escapeHtml(pageUrl.href);
   const streamUrl = escapeHtml(videoUrl.href);
   const downloadHref = escapeHtml(downloadUrl.href);
+  const thumbnailHref = escapeHtml(thumbnailUrl.href);
   const fileType = escapeHtml(file.fileType);
 
   return `<!doctype html>
@@ -30,6 +33,11 @@ export function renderVideoPlayer(file: File, pageUrl: URL): string {
   <meta property="og:type" content="video.other">
   <meta property="og:url" content="${canonicalUrl}">
   <meta property="og:description" content="Watch ${title}">
+  <meta property="og:image" content="${thumbnailHref}">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1280">
+  <meta property="og:image:height" content="720">
+  <meta property="og:image:alt" content="Video preview for ${title}">
   <meta property="og:video" content="${streamUrl}">
   <meta property="og:video:url" content="${streamUrl}">
   <meta property="og:video:type" content="${fileType}">
@@ -47,7 +55,7 @@ export function renderVideoPlayer(file: File, pageUrl: URL): string {
 <body>
   <main>
     <h1>${title}</h1>
-    <video controls playsinline preload="metadata" aria-label="${title}">
+    <video controls playsinline preload="metadata" poster="${thumbnailHref}" aria-label="${title}">
       <source src="${streamUrl}" type="${fileType}">
       Your browser does not support video playback.
     </video>
