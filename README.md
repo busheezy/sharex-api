@@ -37,6 +37,10 @@ Send `X-API-Key` with each upload. Successful uploads retain their existing JSON
 
 Image URLs redirect to `/i/:id/:filename`. Thumbnails are available at `/i/:id/thumbnail`. Existing deletion URLs are preserved; keep deletion keys private.
 
+For uploaded video files, share `/f/:id/watch` to open a browser player. This page includes Open Graph video metadata for playable Discord embeds, pointing to `/f/:id/video`, an inline stream with byte range support for seeking. The original `/f/:id` link still downloads the file, and the player includes a download link. Videos uploaded before this change also work when their stored MIME type is `video/*`.
+
+Use a publicly accessible HTTPS API URL for Discord embeds. Browser and Discord playback depends on the uploaded codec; MP4 with H.264 video and AAC audio is a suitable choice. Files are served as uploaded, without transcoding. Discord may cache previews, so verify a new player link after deployment. The `/watch` and `/video` routes return 404 for non-video files.
+
 Use the [installer](https://github.com/busheezy/sharex-api-installer) to generate ShareX uploader profiles and Docker Compose configuration. The [paste frontend](https://github.com/busheezy/sharex-paste-front) displays text, and the [VS Code extension](https://github.com/busheezy/vscode-sharex-api-uploader) uploads editor documents.
 
 ## Checks
