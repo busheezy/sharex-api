@@ -198,6 +198,13 @@ describe("FilesService", () => {
         expect(deleteFile).toBe(undefined);
         expect(unlink).toHaveBeenCalledWith(filePath);
         expect(rm).toHaveBeenCalledWith(thumbnailPath, { force: true });
+        const framePath = join(
+          process.cwd(),
+          "thumbnails",
+          "files",
+          `${mockFile.fileName}.frame.jpg`,
+        );
+        expect(rm).toHaveBeenCalledWith(framePath, { force: true });
       });
     });
   });
@@ -206,7 +213,7 @@ describe("FilesService", () => {
     const file = new File();
     file.fileName = "stored-video";
     const directory = join(process.cwd(), "thumbnails", "files");
-    const thumbnailPath = join(directory, "stored-video.jpg");
+    const thumbnailPath = join(directory, "stored-video.frame.jpg");
     const videoPath = join(process.cwd(), "uploads", "files", file.fileName);
     const thumbnail = Buffer.from("preview");
     const missingFile = Object.assign(new Error("Missing cache"), { code: "ENOENT" });
@@ -237,7 +244,9 @@ describe("FilesService", () => {
       expect(result).toBe(thumbnail);
       expect(renderVideoThumbnail).toHaveBeenCalledWith(videoPath);
       expect(mkdir).toHaveBeenCalledWith(directory, { recursive: true });
-      expect(temporaryPath).toEqual(expect.stringMatching(/stored-video\.jpg\.[\w-]+\.tmp$/));
+      expect(temporaryPath).toEqual(
+        expect.stringMatching(/stored-video\.frame\.jpg\.[\w-]+\.tmp$/),
+      );
       expect(writeFile).toHaveBeenCalledWith(temporaryPath, thumbnail);
       expect(rename).toHaveBeenCalledWith(temporaryPath, thumbnailPath);
       expect(rm).toHaveBeenCalledWith(temporaryPath, { force: true });

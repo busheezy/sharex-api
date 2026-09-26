@@ -77,11 +77,13 @@ export class FilesService {
 
     const thumbnailPath = join(process.cwd(), "thumbnails", "files", `${file.fileName}.jpg`);
     await rm(thumbnailPath, { force: true });
+    const framePath = join(process.cwd(), "thumbnails", "files", `${file.fileName}.frame.jpg`);
+    await rm(framePath, { force: true });
   }
 
   async videoThumbnail(file: File): Promise<Buffer> {
     const directory = join(process.cwd(), "thumbnails", "files");
-    const thumbnailPath = join(directory, `${file.fileName}.jpg`);
+    const thumbnailPath = join(directory, `${file.fileName}.frame.jpg`);
 
     try {
       const thumbnail = await readFile(thumbnailPath);

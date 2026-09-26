@@ -64,7 +64,7 @@ export class FilesController {
   }
 
   @Get(":id/thumbnail")
-  @ApiOkResponse({ description: "A cached video preview image with a play symbol." })
+  @ApiOkResponse({ description: "A cached video frame preview image." })
   async thumbnail(@Param("id") stringId: string): Promise<StreamableFile> {
     const file = await this.findVideo(stringId);
     const thumbnail = await this.filesService.videoThumbnail(file);

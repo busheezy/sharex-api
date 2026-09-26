@@ -22,7 +22,7 @@ describe("renderVideoThumbnail", () => {
   it.each([
     [640, 360],
     [360, 640],
-  ])("renders a %s by %s frame as a letterboxed JPEG with a play symbol", async (width, height) => {
+  ])("renders a %s by %s frame as a letterboxed JPEG without an overlay", async (width, height) => {
     const create = { width, height, channels: 3 as const, background: "#ff0000" };
     const frame = await sharp({ create }).png().toBuffer();
     const stderr = Buffer.alloc(0);
@@ -44,8 +44,8 @@ describe("renderVideoThumbnail", () => {
     expect(metadata.width).toBe(1280);
     expect(metadata.height).toBe(720);
     expect(center[0]).toBeGreaterThan(240);
-    expect(center[1]).toBeGreaterThan(240);
-    expect(center[2]).toBeGreaterThan(240);
+    expect(center[1]).toBeLessThan(10);
+    expect(center[2]).toBeLessThan(10);
     expect(executeFile).toHaveBeenCalledWith(
       "ffmpeg",
       expect.arrayContaining([

@@ -79,9 +79,9 @@ describe("FilesController", () => {
         expect(html).toContain(`<meta property="og:url" content="${baseUrl}/watch">`);
         expect(html).toContain(`<meta property="og:video" content="${baseUrl}/video">`);
         expect(html).toContain('<meta property="og:video:type" content="video/mp4">');
-        expect(html).toContain(`<meta property="og:image" content="${baseUrl}/thumbnail">`);
+        expect(html).toContain(`<meta property="og:image" content="${baseUrl}/thumbnail?v=2">`);
         expect(html).toContain('<meta property="og:image:type" content="image/jpeg">');
-        expect(html).toContain(`poster="${baseUrl}/thumbnail"`);
+        expect(html).toContain(`poster="${baseUrl}/thumbnail?v=2"`);
         expect(html).toContain(`<source src="${baseUrl}/video" type="video/mp4">`);
         expect(html).toContain(`<a href="${baseUrl}">Download video</a>`);
         expect(html).toContain("clip &amp; &lt;script&gt;&quot;&#39;.mp4");

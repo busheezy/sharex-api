@@ -16,6 +16,7 @@ export function renderVideoPlayer(file: File, pageUrl: URL): string {
   downloadUrl.pathname = pageUrl.pathname.replace(/\/watch$/, "");
   const thumbnailUrl = new URL(pageUrl);
   thumbnailUrl.pathname = pageUrl.pathname.replace(/\/watch$/, "/thumbnail");
+  thumbnailUrl.searchParams.set("v", "2");
   const title = escapeHtml(file.originalFileName);
   const canonicalUrl = escapeHtml(pageUrl.href);
   const streamUrl = escapeHtml(videoUrl.href);

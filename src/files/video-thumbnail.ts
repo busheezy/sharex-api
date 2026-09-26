@@ -33,13 +33,8 @@ export async function renderVideoThumbnail(videoPath: string): Promise<Buffer> {
   const options = { encoding: "buffer" as const, timeout: 30_000, maxBuffer: 5 * 1024 * 1024 };
   const result = await executeFile("ffmpeg", args, options);
   const frame = result.stdout;
-  const input = Buffer.from(
-    '<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96"><circle cx="48" cy="48" r="46" fill="#111318" fill-opacity="0.8" stroke="white" stroke-width="2"/><path d="M38 27L70 48L38 69Z" fill="white"/></svg>',
-  );
-  const overlay = { input, gravity: "centre" as const };
   const thumbnail = await sharp(frame)
     .resize(1280, 720, { fit: "contain", background: "#000000" })
-    .composite([overlay])
     .jpeg({ quality: 85 })
     .toBuffer();
 
