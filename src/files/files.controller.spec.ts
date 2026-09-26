@@ -79,6 +79,9 @@ describe("FilesController", () => {
         expect(html).toContain(`<meta property="og:url" content="${baseUrl}/watch">`);
         expect(html).toContain(`<meta property="og:video" content="${baseUrl}/video">`);
         expect(html).toContain('<meta property="og:video:type" content="video/mp4">');
+        expect(html).toContain(`<meta property="og:image" content="${baseUrl}/thumbnail">`);
+        expect(html).toContain('<meta property="og:image:type" content="image/jpeg">');
+        expect(html).toContain(`poster="${baseUrl}/thumbnail"`);
         expect(html).toContain(`<source src="${baseUrl}/video" type="video/mp4">`);
         expect(html).toContain(`<a href="${baseUrl}">Download video</a>`);
         expect(html).toContain("clip &amp; &lt;script&gt;&quot;&#39;.mp4");
@@ -147,6 +150,57 @@ describe("FilesController", () => {
 
       await expect(result).rejects.toBeInstanceOf(NotFoundException);
       expect(sendFile).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("thumbnail", () => {
+    it("returns the video preview as an inline JPEG", async () => {
+      const file = new File();
+      file.fileType = "video/mp4";
+      const thumbnail = Buffer.from("preview");
+      jest.spyOn(service, "findOne").mockResolvedValue(file);
+      jest.spyOn(service, "videoThumbnail").mockResolvedValue(thumbnail);
+
+      const result = await controller.thumbnail("abcdef");
+      const headers = result.getHeaders();
+
+      expect(service.findOne).toHaveBeenCalledWith("abcdef");
+      expect(service.videoThumbnail).toHaveBeenCalledWith(file);
+      expect(result).toBeInstanceOf(StreamableFile);
+      expect(headers).toEqual({
+        type: "image/jpeg",
+        disposition: "inline",
+        length: thumbnail.length,
+      });
+    });
+
+    it("rejects non-video files without generating a thumbnail", async () => {
+      const file = new File();
+      file.fileType = "text/plain";
+      jest.spyOn(service, "findOne").mockResolvedValue(file);
+      jest.spyOn(service, "videoThumbnail");
+
+      const result = controller.thumbnail("abcdef");
+
+      await expect(result).rejects.toBeInstanceOf(NotFoundException);
+      expect(service.videoThumbnail).not.toHaveBeenCalled();
+    });
+
+    it("propagates missing video and thumbnail generation errors", async () => {
+      const missing = new NotFoundException();
+      const findOne = jest.spyOn(service, "findOne").mockRejectedValue(missing);
+      const missingResult = controller.thumbnail("missing");
+
+      await expect(missingResult).rejects.toBe(missing);
+
+      const file = new File();
+      file.fileType = "video/mp4";
+      const error = new Error("Decode failed");
+      findOne.mockResolvedValue(file);
+      jest.spyOn(service, "videoThumbnail").mockRejectedValue(error);
+      const failedResult = controller.thumbnail("abcdef");
+
+      await expect(failedResult).rejects.toBe(error);
     });
   });
 

@@ -2,16 +2,28 @@ import { NotFoundException, StreamableFile } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { Readable } from "node:stream";
+import { mkdir, readFile, rename, rm, unlink, writeFile } from "node:fs/promises";
+import { join } from "node:path";
 import { CommonService } from "../common/common.service";
 import { createMockRepository, MockRepository } from "../common/mock.repo";
 import { File } from "./entities/file.entity";
 import { FilesService } from "./files.service";
+import { renderVideoThumbnail } from "./video-thumbnail";
+
+jest.mock("./video-thumbnail", () => ({
+  renderVideoThumbnail: jest.fn(),
+}));
 
 jest.mock("node:fs/promises", () => {
   const actual = jest.requireActual("node:fs/promises");
   return {
     ...actual,
+    mkdir: jest.fn().mockResolvedValue(undefined),
+    readFile: jest.fn(),
+    rename: jest.fn().mockResolvedValue(undefined),
+    rm: jest.fn().mockResolvedValue(undefined),
     unlink: jest.fn().mockResolvedValue(null),
+    writeFile: jest.fn().mockResolvedValue(undefined),
   };
 });
 
@@ -175,8 +187,106 @@ describe("FilesService", () => {
     describe("when deleting file", () => {
       it("no errors", async () => {
         const deleteFile = await service.deleteFile(mockFile);
+        const filePath = join(process.cwd(), "uploads", "files", mockFile.fileName);
+        const thumbnailPath = join(
+          process.cwd(),
+          "thumbnails",
+          "files",
+          `${mockFile.fileName}.jpg`,
+        );
+
         expect(deleteFile).toBe(undefined);
+        expect(unlink).toHaveBeenCalledWith(filePath);
+        expect(rm).toHaveBeenCalledWith(thumbnailPath, { force: true });
       });
+    });
+  });
+
+  describe("videoThumbnail", () => {
+    const file = new File();
+    file.fileName = "stored-video";
+    const directory = join(process.cwd(), "thumbnails", "files");
+    const thumbnailPath = join(directory, "stored-video.jpg");
+    const videoPath = join(process.cwd(), "uploads", "files", file.fileName);
+    const thumbnail = Buffer.from("preview");
+    const missingFile = Object.assign(new Error("Missing cache"), { code: "ENOENT" });
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+      jest.mocked(readFile).mockReset().mockRejectedValue(missingFile);
+      jest.mocked(renderVideoThumbnail).mockReset().mockResolvedValue(thumbnail);
+      jest.mocked(writeFile).mockReset().mockResolvedValue(undefined);
+      jest.mocked(rename).mockReset().mockResolvedValue(undefined);
+    });
+
+    it("returns a cached image without decoding the video", async () => {
+      jest.mocked(readFile).mockResolvedValue(thumbnail);
+
+      const result = await service.videoThumbnail(file);
+
+      expect(result).toBe(thumbnail);
+      expect(readFile).toHaveBeenCalledWith(thumbnailPath);
+      expect(renderVideoThumbnail).not.toHaveBeenCalled();
+      expect(writeFile).not.toHaveBeenCalled();
+    });
+
+    it("generates a missing preview and publishes the complete cache atomically", async () => {
+      const result = await service.videoThumbnail(file);
+      const temporaryPath = jest.mocked(writeFile).mock.calls[0][0];
+
+      expect(result).toBe(thumbnail);
+      expect(renderVideoThumbnail).toHaveBeenCalledWith(videoPath);
+      expect(mkdir).toHaveBeenCalledWith(directory, { recursive: true });
+      expect(temporaryPath).toEqual(expect.stringMatching(/stored-video\.jpg\.[\w-]+\.tmp$/));
+      expect(writeFile).toHaveBeenCalledWith(temporaryPath, thumbnail);
+      expect(rename).toHaveBeenCalledWith(temporaryPath, thumbnailPath);
+      expect(rm).toHaveBeenCalledWith(temporaryPath, { force: true });
+    });
+
+    it("propagates cache access errors without regenerating the preview", async () => {
+      const error = Object.assign(new Error("Access denied"), { code: "EACCES" });
+      jest.mocked(readFile).mockRejectedValue(error);
+
+      const result = service.videoThumbnail(file);
+
+      await expect(result).rejects.toBe(error);
+      expect(renderVideoThumbnail).not.toHaveBeenCalled();
+      expect(writeFile).not.toHaveBeenCalled();
+    });
+
+    it("does not cache a failed video decode", async () => {
+      const error = new Error("Invalid video");
+      jest.mocked(renderVideoThumbnail).mockRejectedValue(error);
+
+      const result = service.videoThumbnail(file);
+
+      await expect(result).rejects.toBe(error);
+      expect(writeFile).not.toHaveBeenCalled();
+      expect(rename).not.toHaveBeenCalled();
+    });
+
+    it("cleans up the temporary image when writing fails", async () => {
+      const error = new Error("Disk full");
+      jest.mocked(writeFile).mockRejectedValue(error);
+
+      const result = service.videoThumbnail(file);
+
+      await expect(result).rejects.toBe(error);
+      const temporaryPath = jest.mocked(writeFile).mock.calls[0][0];
+      expect(rm).toHaveBeenCalledWith(temporaryPath, { force: true });
+      expect(rename).not.toHaveBeenCalled();
+    });
+
+    it("cleans up the temporary image when publishing fails", async () => {
+      const error = new Error("Rename failed");
+      jest.mocked(rename).mockRejectedValue(error);
+
+      const result = service.videoThumbnail(file);
+
+      await expect(result).rejects.toBe(error);
+      const temporaryPath = jest.mocked(writeFile).mock.calls[0][0];
+      expect(rm).toHaveBeenCalledWith(temporaryPath, { force: true });
+      expect(rename).toHaveBeenCalledWith(temporaryPath, thumbnailPath);
     });
   });
 

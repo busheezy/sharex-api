@@ -5,7 +5,8 @@ Follow the existing architecture and preserve public APIs. Keep changes focused 
 - Use the Node and pnpm versions pinned in `.nvmrc` and `package.json`.
 - Use Oxlint and Oxfmt; do not reintroduce ESLint or Prettier.
 - Run `pnpm check` and `pnpm build` before finishing. Run the existing tests when relevant.
-- Do not add tests or code comments unless explicitly requested.
+- We are allowed to write tests if the project already is using tests extensively.
+- Do not add code comments unless explicitly requested.
 - Use braces for every control-flow block, guard clauses for early exits, and no nested ternaries.
 - Maximum control-flow depth is 3. The cyclomatic complexity limit is 10; split larger functions.
 - Prefer `const`, named intermediate values, and object shorthand. Avoid mutable state when a clear helper or collection operation works.
