@@ -1,4 +1,4 @@
-FROM node:26.8.1-bookworm-slim AS base
+FROM node:26.10.0-bookworm-slim AS base
 WORKDIR /app
 RUN npm install --global pnpm@12.3.4
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
@@ -11,7 +11,7 @@ RUN --mount=type=cache,id=sharex-api-pnpm,target=/root/.local/share/pnpm/store p
 COPY . .
 RUN pnpm build
 
-FROM node:26.8.1-bookworm-slim
+FROM node:26.10.0-bookworm-slim
 WORKDIR /app
 RUN apt-get update && apt-get install -y --no-install-recommends ffmpeg && rm -rf /var/lib/apt/lists/*
 COPY --from=prod-deps /app/node_modules ./node_modules
