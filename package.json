@@ -56,7 +56,7 @@
     "@types/fs-extra": "^11.0.4",
     "@types/jest": "^30.0.0",
     "@types/multer": "^2.2.0",
-    "@types/node": "^24.13.3",
+    "@types/node": "^26.6.2",
     "@types/supertest": "^7.2.1",
     "jest": "^30.5.1",
     "oxfmt": "0.66.0",
