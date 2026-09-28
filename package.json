@@ -38,7 +38,7 @@
     "@nestjs/typeorm": "^12.0.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.15.1",
-    "fs-extra": "^11.4.0",
+    "fs-extra": "^11.4.1",
     "nanoid": "^6.0.1",
     "nanoid-dictionary": "^5.0.0",
     "pg": "^8.23.0",
